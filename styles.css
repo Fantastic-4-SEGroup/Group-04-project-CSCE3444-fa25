@@ -180,3 +180,41 @@ body{
   .player-card{grid-template-columns: 1fr}
   .cover{height:220px}
 }
+
+
+/* aura backgrounds for mood buttons */
+.chip[data-mood="mood1"] {
+  background-image: url('images/pastel.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.chip[data-mood="mood2"] {
+  background-image: url('images/blues.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.chip[data-mood="mood3"] {
+  background-image: url('images/orangepinl.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.chip[data-mood="mood4"] {
+  background-image: url('images/blueyellow.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.chip[data-mood="mood5"] {
+  background-image: url('images/greenpink.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.chip[data-mood="mood6"] {
+  background-image: url('images/purplepink.jpg');
+  background-size: cover;
+  background-position: center;
+}
