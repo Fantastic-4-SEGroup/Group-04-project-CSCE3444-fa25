@@ -24,7 +24,7 @@ body{
   color:var(--ink);
 }
 .bg-gradient {
-  background-image: url('images/background2.jpg'); 
+  background-image: url('background2.jpg'); 
   background-size: cover;      
   background-position: center;  
   background-repeat: no-repeat; 
@@ -187,38 +187,39 @@ body{
 
 /* aura backgrounds for mood buttons */
 .chip[data-mood="mood1"] {
-  background-image: url('images/pastel.jpg');
+  background-image: url('pastel.jpg');
   background-size: cover;
   background-position: center;
 }
 
 .chip[data-mood="mood2"] {
-  background-image: url('images/blues.jpg');
+  background-image: url('blues.jpg');
   background-size: cover;
   background-position: center;
 }
 
 .chip[data-mood="mood3"] {
-  background-image: url('images/orangepinl.jpg');
+  background-image: url('orangepinl.jpg');
   background-size: cover;
   background-position: center;
 }
 
 .chip[data-mood="mood4"] {
-  background-image: url('images/blueyellow.jpg');
+  background-image: url('blueyellow.jpg');
   background-size: cover;
   background-position: center;
 }
 
 .chip[data-mood="mood5"] {
-  background-image: url('images/greenpink.jpg');
+  background-image: url('greenpink.jpg');
   background-size: cover;
   background-position: center;
 }
 
 .chip[data-mood="mood6"] {
-  background-image: url('images/purplepink.jpg');
+  background-image: url('purplepink.jpg');
   background-size: cover;
   background-position: center;
 }
+
 
