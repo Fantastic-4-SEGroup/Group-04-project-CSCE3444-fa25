@@ -222,4 +222,11 @@ body{
   background-position: center;
 }
 
+/*Sign Up Page*/
+.sign_up{
+  text-align: center
+}
 
+.input_f{
+  line-height: .01;
+}

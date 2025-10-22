@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="app.js"></script>
+</head>
+
+<body class="bg-gradient">
+  <main class="container">
+    <h1 class="headline">Sign Up!</h1>
+    <section class="card">
+      <form class="sign_up">
+        <h2 class="input_f">First Name <input type="text" id="firstName" placeholder="Enter Your First Name" required/> </h2>  
+        <br>
+        <h2 class="input_f">Last Name <input type="text" id="lastName" placeholder="Enter Your Last Name" required/></h2>
+        <br>
+        <h2 class="input_f">Username <input type="text" id="username" placeholder="Enter Your Username" required/></h2>
+        <br>
+        <h2 class="input_f">Email <input type="email" id="email" placeholder="Enter Your Email" required/></h2>
+        <br>
+        <h2 class="input_f">Password <input type="password" id="password" placeholder="Enter Your Password" required/></h2>
+        <br>
+        <h2 class="input_f">(optional) Birth Date <input type="date" id="birthdate" placeholder="Enter Your Birth Date" /></h2>
+        <br>
+        <input type="submit" id="submit">
+      </form>
+
+      <script type="module" src="create-account.js" defer></script>
+
+    </section>
+  </main>
+
+</body>
+</html>
