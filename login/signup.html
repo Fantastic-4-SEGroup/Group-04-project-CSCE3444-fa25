@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="app.js"></script>
+</head>
+
+<body class="bg-gradient">
+  <!-- Nav -->
+  <header class="nav">
+    <div class="nav__left">
+      <a href="index.html" class="logo">🎵 MoodSync’d</a>
+    </div>
+    <nav class="nav__right" aria-label="Primary">
+      <a href="index.html" class="nav__link">Home</a>
+      <a href="#" class="nav__link">About</a>
+      <a href="#" class="nav__link">How it Works</a>
+      <a href="login.html" class="nav__link">Sign In</a>
+      <a href="#" class="nav__link">Menu</a>
+    </nav>
+  </header>
+
+<body class="bg-gradient">
+  <main class="container">
+    <h1 class="headline">Sign Up!</h1>
+    <section class="card">
+      <form class="sign_up">
+        <input type="text" id="firstName" placeholder="Enter Your First Name" required/>
+        <input type="text" id="lastName" placeholder="Enter Your Last Name" required/>
+        <input type="text" id="username" placeholder="Enter Your Username" required/>
+        <input type="email" id="email" placeholder="Enter Your Email" required/>
+        <input type="password" id="password" placeholder="Enter Your Password" required/>
+        <h2 class="input_f">Optional Birth Date <input type="date" id="birthdate" placeholder="Enter Your Birth Date" /></h2>
+      </form>
+      <button id="submit" class="cta">Submit</button>
+      <script type="module" src="create-account.js" defer></script>
+
+    </section>
+    <p class="disclaimer">Already have an account? <a href="login.html">Login</a></p>
+  </main>
+
+</body>
+</html>
