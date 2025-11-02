@@ -101,6 +101,7 @@ body{
   color:var(--chip-ink);
   font-weight:600;
   cursor:pointer;
+  text-decoration: none;
 }
 .chip.is-selected{
   outline:3px solid #0ea5e9;

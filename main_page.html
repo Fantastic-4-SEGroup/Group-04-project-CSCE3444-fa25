@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MoodSync’d — Guest</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="app.js"></script>
+</head>
+<body class="bg-gradient">
+  <!-- Nav -->
+  <header class="nav">
+    <div class="nav__left">
+      <!-- Logo slot -->
+      <div class="logo" aria-label="MoodSync'd logo">🎵 MoodSync’d</div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="container">
+    <h1 class="headline">Welcome to<br/>Mood Sync'd</h1>
+
+    <section class="card">
+      <h2 class="card__title">Are you...</h2>
+
+      <!-- Grid of 6 mood buttons (labels are placeholders you can edit) -->
+      <div class="mood-grid" id="moodGrid">
+        <a class="chip" style="text-align:center;" href="guest_home.html">Guest</a>
+        <a class="chip" style="text-align:center;" href="login.html">Returning User</a>
+        <a class="chip" style="text-align:center;" href="signup.html">New User</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <small>© <span id="year"></span> MoodSync’d</small>
+  </footer>
+</body>
+</html>
