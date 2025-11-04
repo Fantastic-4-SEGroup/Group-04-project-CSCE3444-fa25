@@ -267,3 +267,33 @@ input[type="password"]:focus {
   border-color: #7b42ff; /* Purple accent */
   box-shadow: 0 0 8px rgba(123, 66, 255, 0.3);
 }
+
+/* Queue preview */
+.queue {
+  margin-top: .6rem;
+  padding-top: .6rem;
+  border-top: 1px dashed rgba(0,0,0,.15);
+  color:#334155;
+  font-size:.95rem;
+}
+.queue__title {
+  font-weight:700;
+  margin-bottom:.4rem;
+}
+.queue__pills {
+  display:flex;
+  flex-wrap:wrap;
+  gap:.4rem;
+}
+.pill {
+  display:inline-flex;
+  align-items:center;
+  gap:.4rem;
+  padding:.4rem .6rem;
+  border-radius:999px;
+  background:rgba(0,0,0,.06);
+  border:1px solid rgba(0,0,0,.08);
+}
+.pill--current { border-color: rgba(0,0,0,.25); }
+.pill small { opacity:.75; }
+.queue-empty { color:#0b1a2a; }
