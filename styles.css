@@ -170,6 +170,21 @@ body{
   padding:.5rem .9rem;
   cursor:pointer;
 }
+/* Utility & share UI styles */
+.hidden{display:none !important}
+.icon-btn{display:inline-flex;align-items:center;justify-content:center;width:44px;height:40px;padding:0;border-radius:10px}
+.icon-btn svg{color:var(--cta)}
+
+/* Modal overlay & content */
+.modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(11,26,42,0.45);z-index:60}
+.modal__content{background:var(--panel);color:var(--panel-ink);padding:1rem 1.25rem;border-radius:12px;min-width:260px;box-shadow:var(--shadow);text-align:center}
+.modal__actions{display:flex;gap:.5rem;justify-content:center;margin-top:.75rem}
+.modal .ghost{padding:.5rem .9rem}
+
+/* Instagram-style button inside modal */
+.instagram-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem .9rem;border-radius:8px;background:linear-gradient(45deg,#f58529 0%,#dd2a7b 50%,#8134af 100%);color:#fff;border:none}
+.instagram-btn svg{color:rgba(255,255,255,0.95);}
+.instagram-btn span{font-weight:600}
 
 /* Footer */
 .footer{

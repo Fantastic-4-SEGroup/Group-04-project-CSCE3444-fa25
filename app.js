@@ -90,12 +90,62 @@ function initPlayer() {
   if (audioSrc && audio) {
     audioSrc.src = choice.audio;      // set your MP3/URL here
     audio.load();
+    // Try autoplay; reveal share button on success. Also reveal when user presses play.
+    audio.play().then(() => {
+      const shareBtn = document.getElementById('shareBtn');
+      if (shareBtn) shareBtn.classList.remove('hidden');
+    }).catch(() => {/* autoplay blocked; wait for user play */});
+
+    audio.addEventListener('play', () => {
+      const shareBtn = document.getElementById('shareBtn');
+      if (shareBtn) shareBtn.classList.remove('hidden');
+    });
   }
 
   if (newPick) newPick.addEventListener('click', () => {
     sessionStorage.removeItem('guest_mood');
     window.location.href = 'index.html';
   });
+
+  // Share icon opens modal; confirm triggers Instagram-first share flow
+  const shareBtn = document.getElementById('shareBtn');
+  const shareModal = document.getElementById('shareModal');
+  const shareInstagram = document.getElementById('shareInstagram');
+  const shareCancel = document.getElementById('shareCancel');
+
+  function openShareModal() { if (shareModal) shareModal.classList.remove('hidden'); }
+  function closeShareModal() { if (shareModal) shareModal.classList.add('hidden'); }
+
+  if (shareBtn) {
+    shareBtn.addEventListener('click', (e) => { e.preventDefault(); openShareModal(); });
+  }
+
+  async function shareToInstagram() {
+    // Simplified behavior: always navigate the user to Instagram web.
+    // Also attempt to copy a short share text to the clipboard so they can paste it when posting.
+    const track = choice.title || '';
+    const moodText = mood || '';
+    const shareText = `I'm feeling ${moodText} — listening to ${track} on MoodSync’d.` + '\n' + window.location.href;
+
+    try {
+      await navigator.clipboard.writeText(shareText);
+      // Open Instagram in a new tab/window
+      window.open('https://www.instagram.com/', '_blank');
+      // Inform the user that the text was copied
+      alert('Opening Instagram. Share text has been copied to your clipboard — paste it into your post.');
+    } catch (err) {
+      // If clipboard fails, still navigate to Instagram and show the text in a prompt so user can copy manually
+      window.open('https://www.instagram.com/', '_blank');
+      prompt('Copy this text to share on Instagram:', shareText);
+    }
+  }
+
+  if (shareInstagram) {
+    shareInstagram.addEventListener('click', async () => { await shareToInstagram(); closeShareModal(); });
+  }
+  if (shareCancel) {
+    shareCancel.addEventListener('click', () => { closeShareModal(); });
+  }
   
 }
 
