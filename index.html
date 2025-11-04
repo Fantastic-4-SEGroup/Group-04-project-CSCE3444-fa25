@@ -14,44 +14,26 @@
       <!-- Logo slot -->
       <div class="logo" aria-label="MoodSync'd logo">🎵 MoodSync’d</div>
     </div>
-    <nav class="nav__right" aria-label="Primary">
-      <a href="#" class="nav__link">Home</a>
-      <a href="#" class="nav__link">About</a>
-      <a href="#" class="nav__link">How it Works</a>
-      <a href="#" class="nav__link">Sign In</a>
-      <a href="#" class="nav__link">Menu</a>
-    </nav>
   </header>
 
   <!-- Main -->
   <main class="container">
-    <h1 class="headline">Guest<br/>Create your Playlist.</h1>
+    <h1 class="headline">Welcome to<br/>Mood Sync'd</h1>
 
     <section class="card">
-      <h2 class="card__title">Pick your mood</h2>
+      <h2 class="card__title">Are you...</h2>
 
       <!-- Grid of 6 mood buttons (labels are placeholders you can edit) -->
       <div class="mood-grid" id="moodGrid">
-        <button class="chip" data-mood="mood1">Mood 1</button>
-        <button class="chip" data-mood="mood2">Mood 2</button>
-        <button class="chip" data-mood="mood3">Mood 3</button>
-        <button class="chip" data-mood="mood4">Mood 4</button>
-        <button class="chip" data-mood="mood5">Mood 5</button>
-        <button class="chip" data-mood="mood6">Mood 6</button>
+        <a class="chip" style="text-align:center;" href="guest_home.html">Guest</a>
+        <a class="chip" style="text-align:center;" href="login.html">Returning User</a>
+        <a class="chip" style="text-align:center;" href="signup.html">New User</a>
       </div>
-
-      <button id="generateBtn" class="cta" disabled>
-        Generate
-      </button>
     </section>
-
-    <p class="disclaimer">You can try this once as a guest. To keep playlists, <a href="signup.html"> Create an account</a></p>
-    <p class="disclaimer">If you already have an account, or <a href="login.html"> Login</a></p>
   </main>
 
   <footer class="footer">
-    <small>© <span id="year"></span> MoodSync’d (Guest demo)</small>
+    <small>© <span id="year"></span> MoodSync’d</small>
   </footer>
 </body>
 </html>
-
