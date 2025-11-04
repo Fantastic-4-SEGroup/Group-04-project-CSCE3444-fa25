@@ -2,6 +2,13 @@
 const yearEl = document.getElementById('year');
 if (yearEl) yearEl.textContent = new Date().getFullYear();
 
+function saveJSON(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+function loadJSON(key, fallback){
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+  catch { return fallback; }
+}
+function keyOf(t){ return (t?.audio||'') + '|' + (t?.title||''); }
+
 /* ------- INDEX PAGE LOGIC ------- */
 const chips = document.querySelectorAll('.chip');
 const generateBtn = document.getElementById('generateBtn');
@@ -13,92 +20,199 @@ chips.forEach(btn => {
     chips.forEach(c => c.classList.remove('is-selected'));
     btn.classList.add('is-selected');
     selectedMood = btn.dataset.mood;
-    generateBtn.disabled = false;
+    if (generateBtn) generateBtn.disabled = false;
   });
 });
 
 if (generateBtn) {
   generateBtn.addEventListener('click', () => {
     if (!selectedMood) return;
-    // Save the selection then go to player page
     sessionStorage.setItem('guest_mood', selectedMood);
     window.location.href = 'player.html';
   });
 }
 
 /* ------- PLAYER PAGE LOGIC ------- */
-/**
- * Define your moods and two song options each.
- * Replace the placeholder audio URLs + titles + cover images.
- * You can also swap <audio> for an embedded player (Spotify/YouTube) if you prefer.
- */
+/* Make sure these keys match index.html data-mood labels */
 const moodLibrary = {
-  mood1: [
-    { title: 'Song A (Mood 1)', audio: 'song-a-mood1.mp3', cover: 'cover-a-mood1.jpg' }, // TODO: replace
-    { title: 'Song B (Mood 1)', audio: 'song-b-mood1.mp3', cover: 'cover-b-mood1.jpg' }, // TODO: replace
+  Happy: [
+    { title: 'Rock Your Body', audio: 'JustinTimberlake-RockYourBody(Official Video).mp3', cover: 'Justin_Timberlake_-_Rock_Your_Body.youtube' },
+    { title: 'Happy', audio: 'Pharrell Williams - Happy (Video).mp3', cover: 'artworks-000079184494-1nll8c-t500x500.jpg' },
   ],
-  mood2: [
-    { title: 'Song A (Mood 2)', audio: 'song-a-mood2.mp3', cover: 'cover-a-mood2.jpg' },
-    { title: 'Song B (Mood 2)', audio: 'song-b-mood2.mp3', cover: 'cover-b-mood2.jpg' },
+  Sad: [
+    { title: 'Coldplay - Viva La Vida', audio: 'Coldplay - Viva La Vida (Official Video).mp3', cover: 'coldplay.jpeg' },
+    { title: 'Somewhere Over the Rainbow', audio: 'OFFICIAL Somewhere over the Rainbow - Israel IZ Kamakawiwoʻole.mp3', cover: 'somewhere.jpeg' },
   ],
-  mood3: [
-    { title: 'Song A (Mood 3)', audio: 'song-a-mood3.mp3', cover: 'cover-a-mood3.jpg' },
-    { title: 'Song B (Mood 3)', audio: 'song-b-mood3.mp3', cover: 'cover-b-mood3.jpg' },
+  Workout: [
+    { title: 'Grinding', audio: 'Shalon - Grinding (Official Video) feat. Chuck Diamond.mp3', cover: 'grinding_by_shalon.jpeg' },
+    { title: 'The Weeknd - São Paulo feat. Anitta', audio: 'The Weeknd - São Paulo feat. Anitta (Official Audio).mp3', cover: 'sao.jpg' },
   ],
-  mood4: [
-    { title: 'Song A (Mood 4)', audio: 'song-a-mood4.mp3', cover: 'cover-a-mood4.jpg' },
-    { title: 'Song B (Mood 4)', audio: 'song-b-mood4.mp3', cover: 'cover-b-mood4.jpg' },
+  Study: [
+    { title: 'Lo-Fi Study 1', audio: 'lofi1.mp3', cover: 'lofi1.jpg' },
+    { title: 'Lo-Fi Study 2', audio: 'lofi2.mp3', cover: 'lofi2.jpg' },
   ],
-  mood5: [
-    { title: 'Song A (Mood 5)', audio: 'song-a-mood5.mp3', cover: 'cover-a-mood5.jpg' },
-    { title: 'Song B (Mood 5)', audio: 'song-b-mood5.mp3', cover: 'cover-b-mood5.jpg' },
+  Calm: [
+    { title: 'Calm Seas', audio: 'calm1.mp3', cover: 'calm1.jpg' },
+    { title: 'Deep Breath', audio: 'calm2.mp3', cover: 'calm2.jpg' },
   ],
-  mood6: [
-    { title: 'Song A (Mood 6)', audio: 'song-a-mood6.mp3', cover: 'cover-a-mood6.jpg' },
-    { title: 'Song B (Mood 6)', audio: 'song-b-mood6.mp3', cover: 'cover-b-mood6.jpg' },
+  Rage: [
+    { title: 'Push It', audio: 'rage1.mp3', cover: 'rage1.jpg' },
+    { title: 'Break Stuff', audio: 'rage2.mp3', cover: 'rage2.jpg' },
   ],
 };
 
-function initPlayer() {
-  const mood = sessionStorage.getItem('guest_mood');
-  const moodTitleEl = document.getElementById('moodTitle');
+// --- Player state ---
+const state = {
+  mood: null,
+  queue: [],       // array of tracks
+  cursor: 0,       // index into queue (current track)
+  favorites: loadJSON('guest_favorites', []), // persistent favorites
+};
+
+function pickRandomIndex(len, notIndex = -1){
+  if (len <= 1) return 0;
+  let idx = Math.floor(Math.random() * len);
+  if (idx === notIndex) idx = (idx + 1) % len; // avoid immediate repeat
+  return idx;
+}
+
+function setTrackInUI(track){
   const trackTitleEl = document.getElementById('trackTitle');
   const coverArtEl = document.getElementById('coverArt');
   const audioSrc = document.getElementById('audioSrc');
   const audio = document.getElementById('audio');
-  const newPick = document.getElementById('newPick');
 
-  if (!mood || !moodLibrary[mood]) {
-    // If user hit the page directly or mood unknown, go back to home
-    window.location.replace('index.html');
+  if (trackTitleEl) trackTitleEl.textContent = track?.title || '—';
+  if (coverArtEl) {
+    coverArtEl.src = track?.cover || '';
+    coverArtEl.alt = track?.title ? `${track.title} cover art` : 'Cover art';
+  }
+  if (audioSrc && audio) {
+    audioSrc.src = track?.audio || '';
+    audio.load();
+  }
+  renderQueue();
+}
+
+function playCurrent(){
+  const audio = document.getElementById('audio');
+  if (!audio) return;
+  audio.play().catch(()=>{/* autoplay might be blocked */});
+}
+
+function nextTrack(){
+  if (!state.queue.length) return;
+  state.cursor = (state.cursor + 1) % state.queue.length;
+  setTrackInUI(state.queue[state.cursor]);
+  playCurrent();
+}
+
+function newRandomSong(){
+  if (!state.queue.length) return;
+  const idx = pickRandomIndex(state.queue.length, state.cursor);
+  state.cursor = idx;
+  setTrackInUI(state.queue[state.cursor]);
+  playCurrent();
+}
+
+function favoriteCurrent(){
+  const cur = state.queue[state.cursor];
+  if (!cur) return;
+
+  // 1) persist unique favorite
+  const k = keyOf(cur);
+  const exists = state.favorites.some(t => keyOf(t) === k);
+  if (!exists){
+    state.favorites.push(cur);
+    saveJSON('guest_favorites', state.favorites);
+  }
+
+  // 2) append a flagged copy to the end of the queue so it plays again later
+  state.queue.push({ ...cur, fav: true });
+  renderQueue();
+}
+
+/* ---------- Render Queue (Up Next) ---------- */
+function renderQueue(limit = 6){
+  const pillsWrap = document.getElementById('queuePills');
+  if (!pillsWrap) return;
+
+  if (!state.queue.length){
+    pillsWrap.innerHTML = '<span class="queue-empty">Nothing queued</span>';
     return;
   }
 
-  // Title line (you can map mood → friendly text later)
+  // show items after current cursor, wrapping around
+  const items = [];
+  const total = state.queue.length;
+  const max = Math.min(limit, total - 1);
+
+  for (let i = 1; i <= max; i++){
+    const idx = (state.cursor + i) % total;
+    const t = state.queue[idx];
+    const star = t.fav ? '<small>★</small>' : '';
+    items.push(`<span class="pill">${star}${escapeHtml(t.title || 'Untitled')}</span>`);
+  }
+
+  if (items.length === 0){
+    pillsWrap.innerHTML = '<span class="queue-empty">No upcoming songs</span>';
+  } else {
+    pillsWrap.innerHTML = items.join('');
+  }
+}
+
+// basic HTML escaper (tiny)
+function escapeHtml(str){ return (str + '').replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s])); }
+
+// --- Init player ---
+function initPlayer() {
+  const isPlayer = document.querySelector('.player-card');
+  if (!isPlayer) return; // not on player page
+
+  const mood = sessionStorage.getItem('guest_mood');
+  const moodTitleEl = document.getElementById('moodTitle');
+  const newPick = document.getElementById('newPick');
+
+  const playPauseBtn = document.getElementById('playPauseBtn');
+  const skipBtn = document.getElementById('skipBtn');
+  const newSongBtn = document.getElementById('newSongBtn');
+  const favoriteBtn = document.getElementById('favoriteBtn');
+  const audio = document.getElementById('audio');
+
+  if (!mood || !moodLibrary[mood]) {
+    window.location.replace('index.html');
+    return;
+  }
+  state.mood = mood;
+
   if (moodTitleEl) moodTitleEl.textContent = `You’re feeling: ${mood}`;
 
-  // Randomly choose one of the two options
-  const picks = moodLibrary[mood];
-  const choice = picks[Math.floor(Math.random() * picks.length)];
+  // Build initial queue from mood (clone so we can mutate)
+  state.queue = (moodLibrary[mood] || []).map(x => ({...x}));
+  // Start at a random song
+  state.cursor = pickRandomIndex(state.queue.length);
+  setTrackInUI(state.queue[state.cursor]);
 
-  // Populate UI
-  if (trackTitleEl) trackTitleEl.textContent = choice.title;
-  if (coverArtEl) {
-    coverArtEl.src = choice.cover || '';
-    coverArtEl.alt = `${choice.title} cover art`;
-  }
-  if (audioSrc && audio) {
-    audioSrc.src = choice.audio;      // set your MP3/URL here
-    audio.load();
-  }
-
+  // Wire controls
+  if (playPauseBtn) playPauseBtn.addEventListener('click', () => {
+    if (audio.paused) audio.play(); else audio.pause();
+  });
+  if (skipBtn) skipBtn.addEventListener('click', nextTrack);
+  if (newSongBtn) newSongBtn.addEventListener('click', newRandomSong);
+  if (favoriteBtn) favoriteBtn.addEventListener('click', favoriteCurrent);
   if (newPick) newPick.addEventListener('click', () => {
     sessionStorage.removeItem('guest_mood');
     window.location.href = 'index.html';
   });
+
+  // Auto-advance when the song ends
+  audio.addEventListener('ended', nextTrack);
+
+  // Paint initial queue
+  renderQueue();
 }
 
-// Only runs on player.html
+// Run on player.html only
 if (document.body.classList.contains('bg-gradient') && document.querySelector('.player-card')) {
   initPlayer();
 }
