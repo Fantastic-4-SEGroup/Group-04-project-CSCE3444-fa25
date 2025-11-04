@@ -169,6 +169,11 @@ body{
   padding:.5rem .9rem;
   cursor:pointer;
 }
+/*button for instragram share */
+/* Share button styling */
+.share-btn{display:inline-flex;align-items:center;gap:.5rem}
+.hidden{display:none !important}
+
 
 /* Footer */
 .footer{

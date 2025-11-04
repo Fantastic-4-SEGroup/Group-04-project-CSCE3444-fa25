@@ -96,6 +96,7 @@ function initPlayer() {
     sessionStorage.removeItem('guest_mood');
     window.location.href = 'index.html';
   });
+  
 }
 
 // Only runs on player.html
