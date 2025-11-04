@@ -36,19 +36,6 @@
       <script defer src="app.js"></script>
     </head>
     <body class="bg-gradient">
-      <!-- Nav -->
-      <header class="nav">
-        <div class="nav__left">
-          <a href="index.html" class="logo">🎵 MoodSync’d</a>
-        </div>
-        <nav class="nav__right" aria-label="Primary">
-          <a href="index.html" class="nav__link">Home</a>
-          <a href="#" class="nav__link">About</a>
-          <a href="#" class="nav__link">How it Works</a>
-          <a href="#" class="nav__link">Sign In</a>
-          <a href="#" class="nav__link">Menu</a>
-        </nav>
-      </header>
 
       <!-- Player -->
       <main class="container container--player">
@@ -95,6 +82,12 @@
                 </div>
               </div>
             </div>
+            <div id="queueView" class="queue">
+          <div class="queue__title">Up next</div>
+          <div class="queue__pills" id="queuePills">
+            <span class="queue-empty">Nothing queued</span>
+          </div>
+        </div>
           </div>
         </section>
       </main>
@@ -104,3 +97,4 @@
       </footer>
     </body>
     </html>
+
