@@ -36,28 +36,28 @@ if (generateBtn) {
 /* Make sure these keys match index.html data-mood labels */
 const moodLibrary = {
   Happy: [
-    { title: 'Rock Your Body', audio: 'JustinTimberlake-RockYourBody(Official Video).mp3', cover: 'Justin_Timberlake_-_Rock_Your_Body.youtube' },
-    { title: 'Happy', audio: 'Pharrell Williams - Happy (Video).mp3', cover: 'artworks-000079184494-1nll8c-t500x500.jpg' },
+    { title: 'Rock Your Body', audio: 'audio/JustinTimberlake-RockYourBody(Official Video).mp3', cover: 'images/Justin_Timberlake_-_Rock_Your_Body.youtube' },
+    { title: 'Happy', audio: 'audio/Pharrell Williams - Happy (Video).mp3', cover: 'images/artworks-000079184494-1nll8c-t500x500.jpg' },
   ],
   Sad: [
-    { title: 'Coldplay - Viva La Vida', audio: 'Coldplay - Viva La Vida (Official Video).mp3', cover: 'coldplay.jpeg' },
-    { title: 'Somewhere Over the Rainbow', audio: 'OFFICIAL Somewhere over the Rainbow - Israel IZ Kamakawiwoʻole.mp3', cover: 'somewhere.jpeg' },
+    { title: 'Coldplay - Viva La Vida', audio: 'audio/Coldplay - Viva La Vida (Official Video).mp3', cover: 'images/coldplay.jpeg' },
+    { title: 'Somewhere Over the Rainbow', audio: 'audio/OFFICIAL Somewhere over the Rainbow - Israel IZ Kamakawiwoʻole.mp3', cover: 'images/somewhere.jpeg' },
   ],
   Workout: [
-    { title: 'Grinding', audio: 'Shalon - Grinding (Official Video) feat. Chuck Diamond.mp3', cover: 'grinding_by_shalon.jpeg' },
-    { title: 'The Weeknd - São Paulo feat. Anitta', audio: 'The Weeknd - São Paulo feat. Anitta (Official Audio).mp3', cover: 'sao.jpg' },
+    { title: 'Grinding', audio: 'audio/Shalon - Grinding (Official Video) feat. Chuck Diamond.mp3', cover: 'images/grinding_by_shalon.jpeg' },
+    { title: 'The Weeknd - São Paulo feat. Anitta', audio: 'audio/The Weeknd - São Paulo feat. Anitta (Official Audio).mp3', cover: 'images/sao.jpg' },
   ],
   Study: [
-    { title: 'Lo-Fi Study 1', audio: 'lofi1.mp3', cover: 'lofi1.jpg' },
-    { title: 'Lo-Fi Study 2', audio: 'lofi2.mp3', cover: 'lofi2.jpg' },
+    { title: 'Lo-Fi Study 1', audio: 'audio/lofi1.mp3', cover: 'images/lofi1.jpg' },
+    { title: 'Lo-Fi Study 2', audio: 'audio/lofi2.mp3', cover: 'images/lofi2.jpg' },
   ],
   Calm: [
-    { title: 'Calm Seas', audio: 'calm1.mp3', cover: 'calm1.jpg' },
-    { title: 'Deep Breath', audio: 'calm2.mp3', cover: 'calm2.jpg' },
+    { title: 'Calm Seas', audio: 'audio/calm1.mp3', cover: 'images/calm1.jpg' },
+    { title: 'Deep Breath', audio: 'audio/calm2.mp3', cover: 'images/calm2.jpg' },
   ],
   Rage: [
-    { title: 'Push It', audio: 'rage1.mp3', cover: 'rage1.jpg' },
-    { title: 'Break Stuff', audio: 'rage2.mp3', cover: 'rage2.jpg' },
+    { title: 'Push It', audio: 'audio/rage1.mp3', cover: 'images/rage1.jpg' },
+    { title: 'Break Stuff', audio: 'audio/rage2.mp3', cover: 'images/rage2.jpg' },
   ],
 };
 

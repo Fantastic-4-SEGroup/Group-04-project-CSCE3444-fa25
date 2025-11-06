@@ -24,7 +24,7 @@ body{
   color:var(--ink);
 }
 .bg-gradient {
-  background-image: url('background2-1.jpg'); 
+  background-image: url('images/background2-1.jpg'); 
   background-size: cover;      
   background-position: center;  
   background-repeat: no-repeat; 
@@ -203,37 +203,37 @@ body{
 
 /* aura backgrounds for mood buttons */
 .chip[data-mood="Happy"] {
-  background-image: url('Happy_Button_Hue.jpg');
+  background-image: url('images/Happy_Button_Hue.jpg');
   background-size: cover;
   background-position: center;
 }
 
 .chip[data-mood="Sad"] {
-  background-image: url('Sad_Button_Hue.jpg');
+  background-image: url('images/Sad_Button_Hue.jpg');
   background-size: cover;
   background-position: center;
 }
 
 .chip[data-mood="Rage"] {
-  background-image: url('Rage_Button_Hue.jpg');
+  background-image: url('images/Rage_Button_Hue.jpg');
   background-size: cover;
   background-position: center;
 }
 
 .chip[data-mood="Workout"] {
-  background-image: url('WorkOut_Button_Hue.jpg');
+  background-image: url('images/WorkOut_Button_Hue.jpg');
   background-size: cover;
   background-position: center;
 }
 
 .chip[data-mood="Study"] {
-  background-image: url('Study_Button_Hue.jpg');
+  background-image: url('images/Study_Button_Hue.jpg');
   background-size: cover;
   background-position: center;
 }
 
 .chip[data-mood="Calm"] {
-  background-image: url('Calm_Button_Hue.jpg');
+  background-image: url('images/Calm_Button_Hue.jpg');
   background-size: cover;
   background-position: center;
 }
