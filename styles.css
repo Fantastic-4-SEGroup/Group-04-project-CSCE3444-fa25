@@ -57,6 +57,9 @@ body{
   border:1px solid rgba(11,26,42,.2);
   border-radius:12px;
   backdrop-filter:saturate(120%);
+  display:inline-flex;      /* ensure anchors align like buttons */
+  align-items:center;       /* vertically center text/icons */
+  gap:.25rem;              /* small gap if icon present */
 }
 .nav__link:hover{background:rgba(255,255,255,.3)}
 
@@ -297,3 +300,71 @@ input[type="password"]:focus {
 .pill--current { border-color: rgba(0,0,0,.25); }
 .pill small { opacity:.75; }
 .queue-empty { color:#0b1a2a; }
+
+/* Dropdown Button - match nav button styles */
+.dropbtn {
+  background: transparent;
+  color: #0b1a2a; /* match nav__link text color */
+  padding: .5rem .75rem; /* same spacing as .nav__link */
+  font-size: inherit;
+  border: 1px solid rgba(11,26,42,.2); /* match nav link border */
+  border-radius: 12px; /* match nav link radius */
+  backdrop-filter: saturate(120%);
+  display: inline-flex; /* similar layout to anchors */
+  align-items: center;
+  gap: .25rem;
+  cursor: pointer;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-flex; /* match nav items layout so contents align */
+  align-items: center;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  position: absolute;
+  /* position centered below the trigger button */
+  left: 50%;
+  top: calc(100% + 0.25rem);
+  transform: translateX(-50%);
+  background: var(--panel); /* match card/panel background */
+  min-width: 120px;
+  padding: .5rem;
+  border-radius: 10px;
+  border: 1px solid rgba(11,26,42,.08);
+  box-shadow: 0px 8px 24px rgba(11,26,42,.12);
+  z-index: 60;
+  /* hide with opacity so small pointer gaps don't immediately close it */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 140ms ease, transform 140ms ease;
+  transform-origin: top center;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  display: block;
+  color: #0b1a2a;
+  text-decoration: none;
+  padding: .5rem .75rem;
+  border-radius: 8px;
+  background: transparent;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #ddd;}
+
+.dropdown:hover .dropdown-content,
+.dropdown:focus-within .dropdown-content {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+.dropdown:hover .dropbtn{background:rgba(255,255,255,.3)}
+.dropbtn:focus{outline:2px solid rgba(11,26,42,.12);outline-offset:2px}
