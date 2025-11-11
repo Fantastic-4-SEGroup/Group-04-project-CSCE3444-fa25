@@ -195,7 +195,11 @@ function initPlayer() {
 
   // Wire controls
   if (playPauseBtn) playPauseBtn.addEventListener('click', () => {
-    if (audio.paused) audio.play(); else audio.pause();
+    if (audio.paused) {
+      audio.play().catch(()=>{});
+      // user initiated play — reveal share immediately
+      revealShareOnce();
+    } else audio.pause();
   });
   if (skipBtn) skipBtn.addEventListener('click', nextTrack);
   if (newSongBtn) newSongBtn.addEventListener('click', newRandomSong);
@@ -207,6 +211,74 @@ function initPlayer() {
 
   // Auto-advance when the song ends
   audio.addEventListener('ended', nextTrack);
+  // --- Share to Instagram UI ---
+  const shareBtn = document.getElementById('shareBtn');
+  const shareModal = document.getElementById('shareModal');
+  const shareInstagram = document.getElementById('shareInstagram');
+  const shareCancel = document.getElementById('shareCancel');
+
+  // Reveal the share icon once the user has selected a mood and playback has started.
+  // Once revealed it stays visible for the session (even if paused) so the user can
+  // share the currently playing track at any time.
+  let shareRevealed = false;
+
+  function revealShareOnce(){
+    if (!shareBtn) return;
+    if (!state.mood) return; // don't reveal unless a mood was selected
+    shareRevealed = true;
+    shareBtn.classList.remove('hidden');
+  }
+
+  // On play or when the audio becomes ready, reveal and keep visible
+  audio.addEventListener('play', revealShareOnce);
+  audio.addEventListener('canplay', revealShareOnce);
+
+  // If autoplay already succeeded by the time we initialize, reveal immediately
+  if ((audio && !audio.paused && audio.currentTime > 0) && state.mood) {
+    // small timeout to ensure DOM is settled
+    setTimeout(revealShareOnce, 50);
+  }
+
+  // Show modal when icon clicked
+  if (shareBtn) shareBtn.addEventListener('click', () => {
+    if (shareModal) shareModal.classList.remove('hidden');
+  });
+
+  // Cancel/hide modal
+  if (shareCancel) shareCancel.addEventListener('click', () => {
+    if (shareModal) shareModal.classList.add('hidden');
+  });
+
+  // Perform Instagram share flow: copy text and open Instagram web
+  if (shareInstagram) shareInstagram.addEventListener('click', async () => {
+    const cur = state.queue[state.cursor];
+    const title = cur?.title || 'a song';
+    const shareText = `Listening to "${title}" on MoodSync'd`;
+
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(shareText);
+      } else {
+        // fallback
+        const ta = document.createElement('textarea');
+        ta.value = shareText;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+    } catch (e) {
+      console.warn('Clipboard copy failed', e);
+    }
+
+    // Open Instagram web in a new tab/window. This is the most reliable client-side
+    // approach for Instagram-only shares without server-side API access.
+    try { window.open('https://www.instagram.com/', '_blank'); }
+    catch (e) { console.warn('Could not open Instagram', e); }
+
+    // hide modal after initiating the share
+    if (shareModal) shareModal.classList.add('hidden');
+  });
 
   // Paint initial queue
   renderQueue();

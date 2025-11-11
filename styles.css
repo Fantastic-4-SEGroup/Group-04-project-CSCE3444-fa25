@@ -178,6 +178,40 @@ body{
 .icon-btn{display:inline-flex;align-items:center;justify-content:center;width:44px;height:40px;padding:0;border-radius:10px}
 .icon-btn svg{color:var(--cta)}
 
+/* Ensure player actions are laid out inline and the share icon matches the controls */
+.player-actions{display:flex;align-items:center;gap:.5rem}
+.player-actions .icon-btn{width:40px;height:40px}
+
+/* Specific styling for the Instagram share button */
+#shareBtn{
+  background:transparent;
+  border:1px solid rgba(11,26,42,.06);
+  color:var(--cta);
+  transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+  position:relative; /* for tooltip */
+}
+#shareBtn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(11,26,42,.08);background:rgba(11,26,42,.03)}
+#shareBtn:focus{outline:2px solid rgba(11,26,42,.08);outline-offset:2px}
+
+/* Simple tooltip using the aria-label attribute */
+#shareBtn::after{
+  content: attr(aria-label);
+  position:absolute;
+  bottom:calc(100% + 8px);
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(11,26,42,.92);
+  color:#fff;
+  padding:.35rem .6rem;
+  border-radius:6px;
+  font-size:.8rem;
+  white-space:nowrap;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .12s ease, transform .12s ease;
+}
+#shareBtn:hover::after,#shareBtn:focus::after{opacity:1;transform:translateX(-50%) translateY(-4px)}
+
 /* Modal overlay & content */
 .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(11,26,42,0.45);z-index:60}
 .modal__content{background:var(--panel);color:var(--panel-ink);padding:1rem 1.25rem;border-radius:12px;min-width:260px;box-shadow:var(--shadow);text-align:center}
@@ -283,6 +317,10 @@ input[type="password"]:focus {
   font-weight:700;
   margin-bottom:.4rem;
 }
+/* header wrapper for queue title + inline controls */
+.queue__header{display:flex;align-items:center;gap:.5rem}
+.queue__header .queue__title{margin-bottom:0}
+.queue__header #shareBtn{margin-left:auto}
 .queue__pills {
   display:flex;
   flex-wrap:wrap;
