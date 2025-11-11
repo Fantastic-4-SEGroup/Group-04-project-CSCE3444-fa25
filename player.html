@@ -37,30 +37,63 @@
         </audio>
 
         <div class="player-actions">
-          <button id="playPauseBtn" class="ghost">Play/Pause</button>
-          <button id="skipBtn" class="ghost">Skip</button>
-          <button id="newSongBtn" class="ghost">Generate New Song</button>
-          <button id="favoriteBtn" class="ghost">Favorite</button>
-          <button id="newPick" class="ghost">Pick another mood</button>
+          <!-- Shuffle / generate new song -->
+          <button id="newSongBtn" class="icon-control" aria-label="Shuffle / new song">
+            <!-- shuffle SVG -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M16 3h5v5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M4 20l7-7 5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M20 14v6h-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M4 4l7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+
+          <!-- Previous (optional) - retains no handler by default but keeps layout symmetry -->
+          <button id="prevBtn" class="icon-control" aria-label="Previous" title="Previous">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M19 20V4L9 12l10 8z" stroke="none" fill="currentColor"/>
+            </svg>
+          </button>
+
+          <!-- Play / Pause -->
+          <button id="playPauseBtn" class="icon-control play-btn" aria-label="Play/Pause">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M5 3v18l15-9L5 3z" fill="currentColor"/>
+            </svg>
+          </button>
+
+          <!-- Next / Skip -->
+          <button id="skipBtn" class="icon-control" aria-label="Next">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M5 4v16l11-8L5 4z" fill="currentColor"/>
+            </svg>
+          </button>
+
+          <!-- Favorite (heart) -->
+          <button id="favoriteBtn" class="icon-control" aria-label="Favorite">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M12 21s-7-4.35-9-7.5C1.5 9.36 5 5 8.5 5c1.74 0 3.04.81 3.5 1.5.46-.69 1.76-1.5 3.5-1.5C19 5 22.5 9.36 21 13.5 19 16.65 12 21 12 21z" fill="currentColor"/>
+            </svg>
+          </button>
+
+          <!-- Share (moves to top controls) -->
+          <button id="shareBtn" class="icon-control hidden" aria-label="Share">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M16 6l-4-4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 2v13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+
+          <!-- Pick another mood (back/exit) -->
+          <button id="newPick" class="icon-control" aria-label="Pick another mood">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
         </div>
 
-        <!-- Queue preview -->
-        <div id="queueView" class="queue">
-          <div class="queue__header">
-            <div class="queue__title">Up next</div>
-            <!-- Share button placed beside the queue/header -->
-            <button id="shareBtn" class="ghost hidden icon-btn" aria-label="Share">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M16 6l-4-4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M12 2v13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
-          </div>
-          <div class="queue__pills" id="queuePills">
-            <span class="queue-empty">Nothing queued</span>
-          </div>
-        </div>
+        <!-- Queue preview removed per user request -->
 
         <!-- Confirmation modal for sharing -->
         <div id="shareModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="shareModalTitle">

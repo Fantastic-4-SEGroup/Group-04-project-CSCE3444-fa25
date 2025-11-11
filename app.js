@@ -250,33 +250,97 @@ function initPlayer() {
   });
 
   // Perform Instagram share flow: copy text and open Instagram web
+  // Create a story-style image (canvas) for the current track and return a Blob
+  async function createStoryImageBlob(track){
+    const w = 1080, h = 1920; // story aspect
+    const canvas = document.createElement('canvas'); canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+
+    // background gradient
+    const g = ctx.createLinearGradient(0,0,w,h);
+    g.addColorStop(0, '#7b42ff'); g.addColorStop(1, '#ffb199');
+    ctx.fillStyle = g; ctx.fillRect(0,0,w,h);
+
+    // draw semi-transparent panel for text
+    ctx.fillStyle = 'rgba(255,255,255,0.08)';
+    const pad = 80; const panelH = 420;
+    roundRect(ctx, pad, h - panelH - 160, w - pad*2, panelH, 28, true, false);
+
+    // cover art (square) on top-left of panel
+    const coverSize = 360;
+    const coverX = pad + 30; const coverY = h - panelH - 120;
+    try{
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.src = track?.cover || document.getElementById('coverArt')?.src || '';
+      await new Promise((res,rej)=>{ img.onload = res; img.onerror = () => res(); });
+      // rounded cover
+      roundImage(ctx, img, coverX, coverY, coverSize, 16);
+    }catch(e){ /* ignore image load errors */ }
+
+    // Title text
+    ctx.fillStyle = '#fff'; ctx.textAlign = 'left';
+    ctx.font = 'bold 48px system-ui, Arial';
+    const title = track?.title || 'A song from MoodSync\'d';
+    wrapText(ctx, title, coverX + coverSize + 30, coverY + 60, w - (coverX + coverSize + 30) - pad - 30, 56);
+
+    // small caption
+    ctx.fillStyle = 'rgba(255,255,255,0.9)'; ctx.font = '20px system-ui, Arial';
+    ctx.fillText("Listening on MoodSync'd", coverX + coverSize + 30, coverY + 60 + 140);
+
+    return await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+  }
+
+  // helpers for rounded rectangles and images
+  function roundRect(ctx,x,y,w,h,r,fill,stroke){ if (typeof r==='undefined') r=5; ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); if(fill) ctx.fill(); if(stroke) ctx.stroke(); }
+  function roundImage(ctx,img,x,y,size,r){ ctx.save(); const cx = x+size/2, cy = y+size/2; ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+size,y,x+size,y+size,r); ctx.arcTo(x+size,y+size,x,y+size,r); ctx.arcTo(x,y+size,x,y,r); ctx.arcTo(x,y,x+size,y,r); ctx.closePath(); ctx.clip(); if(img && img.width) ctx.drawImage(img,x,y,size,size); ctx.restore(); }
+  function wrapText(ctx, text, x, y, maxWidth, lineHeight){ const words = text.split(' '); let line=''; for(let n=0;n<words.length;n++){ const testLine = line + words[n] + ' '; const metrics = ctx.measureText(testLine); if(metrics.width > maxWidth && n>0){ ctx.fillText(line, x, y); line = words[n] + ' '; y += lineHeight; } else { line = testLine; } } ctx.fillText(line, x, y); }
+
   if (shareInstagram) shareInstagram.addEventListener('click', async () => {
     const cur = state.queue[state.cursor];
     const title = cur?.title || 'a song';
-    const shareText = `Listening to "${title}" on MoodSync'd`;
+    const caption = `Listening to "${title}" on MoodSync'd`;
 
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(shareText);
-      } else {
-        // fallback
-        const ta = document.createElement('textarea');
-        ta.value = shareText;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-      }
-    } catch (e) {
-      console.warn('Clipboard copy failed', e);
+    // 1) build story image
+    let blob = null;
+    try { blob = await createStoryImageBlob(cur); }
+    catch(e){ console.warn('Could not create story image', e); }
+
+    // 2) attempt Web Share with files (mobile modern browsers)
+    if (blob && window.navigator && navigator.canShare && navigator.canShare({ files: [new File([blob], 'moodstory.png', { type: 'image/png' })] }) && navigator.share){
+      try{
+        await navigator.share({ files: [new File([blob], 'moodstory.png', { type: 'image/png' })], title, text: caption });
+        if (shareModal) shareModal.classList.add('hidden');
+        return;
+      }catch(e){ console.warn('Web Share failed', e); }
     }
 
-    // Open Instagram web in a new tab/window. This is the most reliable client-side
-    // approach for Instagram-only shares without server-side API access.
-    try { window.open('https://www.instagram.com/', '_blank'); }
-    catch (e) { console.warn('Could not open Instagram', e); }
+    // 3) Try opening Instagram deep link on mobile (best-effort); this won't attach the image
+    const ua = navigator.userAgent || '';
+    const isiOS = /iPhone|iPad|iPod/i.test(ua);
+    const isAndroid = /Android/i.test(ua);
+    if (isAndroid){
+      // attempt Android intent to open Instagram (may prompt user)
+      try{
+        window.location.href = 'intent://instagram.com/#Intent;package=com.instagram.android;scheme=https;end';
+        if (shareModal) shareModal.classList.add('hidden');
+        return;
+      }catch(e){ /* ignore */ }
+    }
 
-    // hide modal after initiating the share
+    // 4) Fallback: copy caption to clipboard and open the generated image in a new tab so user can save and upload to Stories manually
+    try{ if (navigator.clipboard && navigator.clipboard.writeText) await navigator.clipboard.writeText(caption); }
+    catch(e){ console.warn('Clipboard copy failed', e); }
+
+    if (blob){
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+      alert('Copied caption to clipboard and opened story image in a new tab. Save the image and add it to your Instagram Story, then paste the caption.');
+    } else {
+      // nothing else we can do
+      window.open('https://www.instagram.com/', '_blank');
+    }
+
     if (shareModal) shareModal.classList.add('hidden');
   });
 

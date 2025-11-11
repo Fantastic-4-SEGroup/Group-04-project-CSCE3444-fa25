@@ -321,6 +321,16 @@ input[type="password"]:focus {
 .queue__header{display:flex;align-items:center;gap:.5rem}
 .queue__header .queue__title{margin-bottom:0}
 .queue__header #shareBtn{margin-left:auto}
+
+/* Icon-only player controls */
+.player-actions{display:flex;align-items:center;gap:1rem}
+.icon-control{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:999px;background:var(--panel);border:1px solid rgba(11,26,42,.06);cursor:pointer;box-shadow:0 6px 18px rgba(11,26,42,.04)}
+.icon-control svg{color:var(--ink)}
+.icon-control.play-btn{width:56px;height:56px;background:var(--cta);color:var(--cta-ink)}
+.icon-control.play-btn svg{color:var(--cta-ink)}
+.icon-control:hover{transform:translateY(-3px);box-shadow:0 12px 24px rgba(11,26,42,.08)}
+.icon-control:active{transform:translateY(0)}
+.icon-control:focus{outline:2px solid rgba(11,26,42,.08);outline-offset:3px}
 .queue__pills {
   display:flex;
   flex-wrap:wrap;
