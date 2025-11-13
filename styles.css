@@ -470,6 +470,7 @@ input[type="password"]:focus {
 /* Change color of dropdown links on hover */
 .dropdown-content a:hover {background-color: #ddd;}
 
+
 .dropdown:hover .dropdown-content,
 .dropdown:focus-within .dropdown-content {
   opacity: 1;
@@ -478,5 +479,25 @@ input[type="password"]:focus {
   transform: translateX(-50%) translateY(0);
 }
 
+/* Favorites hidden by default; shown when .show-favs is applied */
+.dropdown-content .favorites-list{ display: none; }
+.dropdown-content.show-favs .favorites-list{ display: block; }
+.dropdown-content.show-favs .menu-options{ display: none; }
+
+.favorites-back{ display:flex; gap:.5rem; align-items:center; padding:.25rem .4rem; cursor:pointer; color:var(--panel-ink); font-weight:600; }
+.favorites-back:hover{ background: rgba(11,26,42,.03); }
+
 .dropdown:hover .dropbtn{background:rgba(255,255,255,.3)}
 .dropbtn:focus{outline:2px solid rgba(11,26,42,.12);outline-offset:2px}
+
+/* Click-to-open dropdown state */
+.dropdown.open .dropdown-content{
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translateX(-50%) translateY(0) !important;
+}
+
+.favorites-item{display:flex;align-items:center;gap:.5rem;padding:.35rem .4rem;border-radius:8px;cursor:pointer}
+.favorites-item:hover{background:rgba(11,26,42,.04)}
+.favorites-empty{opacity:.7;padding:.5rem .4rem}

@@ -52,10 +52,12 @@ submit.addEventListener("click", async function (event) {
       firstName: firstName,
       lastName: lastName,
       birthdate: birthdate,
-      createdAt: new Date()
+      createdAt: new Date(),
+      preferencesSet: false
     });
 
-    window.location.href = "created-user-home.html";
+    // After sign up, require new users to pick their preferred genres one time.
+    window.location.href = "preferences.html";
   } catch (error) {
     alert("Error: " + error.message);
   }
