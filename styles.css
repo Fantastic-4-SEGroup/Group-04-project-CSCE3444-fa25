@@ -322,15 +322,78 @@ input[type="password"]:focus {
 .queue__header .queue__title{margin-bottom:0}
 .queue__header #shareBtn{margin-left:auto}
 
-/* Icon-only player controls */
-.player-actions{display:flex;align-items:center;gap:1rem}
-.icon-control{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:999px;background:var(--panel);border:1px solid rgba(11,26,42,.06);cursor:pointer;box-shadow:0 6px 18px rgba(11,26,42,.04)}
-.icon-control svg{color:var(--ink)}
-.icon-control.play-btn{width:56px;height:56px;background:var(--cta);color:var(--cta-ink)}
-.icon-control.play-btn svg{color:var(--cta-ink)}
-.icon-control:hover{transform:translateY(-3px);box-shadow:0 12px 24px rgba(11,26,42,.08)}
-.icon-control:active{transform:translateY(0)}
-.icon-control:focus{outline:2px solid rgba(11,26,42,.08);outline-offset:3px}
+/* Icon-only player controls: center-aligned within the player meta area */
+.player-actions{
+  display:flex;
+  align-items:center;
+  justify-content:center; /* center horizontally */
+  gap:1rem;
+  width:100%;
+  margin-top:0.5rem;
+}
+.icon-control{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:44px;
+  height:44px;
+  border-radius:999px;
+  background:transparent;
+  border:none;
+  cursor:pointer;
+}
+.icon-control svg{ width:18px; height:18px; color:var(--ink); }
+.icon-control.play-btn{
+  width:56px;
+  height:56px;
+  background:#0b0b0b;
+  color:#fff;
+  border-radius:999px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+.icon-control.play-btn svg{ width:20px; height:20px; color:#fff }
+.icon-control:hover{ transform:translateY(-2px); }
+.icon-control:active{ transform:translateY(0); }
+.icon-control:focus{ outline:2px solid rgba(11,26,42,.08); outline-offset:3px }
+/* Circular shuffle/generate button (first button) - stroked circular arrows */
+#newSongBtn.icon-control{
+  width:44px;
+  height:44px;
+  border-radius:999px;
+  background:transparent;
+  border:2px solid rgba(11,26,42,.08);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+  transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+}
+#newSongBtn.icon-control svg{
+  width:20px; height:20px;
+  color:var(--ink);
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+}
+#newSongBtn.icon-control:hover{ transform:translateY(-3px); box-shadow:0 8px 20px rgba(11,26,42,.06); background:rgba(11,26,42,.02); }
+/* Favorite heart styling: outline by default, filled when favorited */
+/* Favorite heart styling: outline by default, filled when favorited */
+#favoriteBtn .heart-path{
+  /* Force outline appearance even if the SVG has inline attributes */
+  stroke: currentColor !important;
+  stroke-width: 1.6 !important;
+  fill: none !important;
+  transition: fill 160ms ease, stroke 160ms ease, transform 160ms ease;
+}
+#favoriteBtn.favorited .heart-path{
+  /* When favorited, fill the heart and remove the stroke. Use !important to override inline attrs. */
+  fill: currentColor !important;
+  stroke: none !important;
+}
+#favoriteBtn{ transition: transform 140ms ease; }
+#favoriteBtn:hover{ transform:translateY(-3px) scale(1.03); }
 .queue__pills {
   display:flex;
   flex-wrap:wrap;

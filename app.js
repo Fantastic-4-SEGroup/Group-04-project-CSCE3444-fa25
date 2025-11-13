@@ -92,6 +92,17 @@ function setTrackInUI(track){
     audio.load();
   }
   renderQueue();
+  // Reflect favorite state on the favorite button
+  try{
+    const favoriteBtnEl = document.getElementById('favoriteBtn');
+    if (favoriteBtnEl){
+        const k = keyOf(track);
+        const isFav = state.favorites.some(t => keyOf(t) === k);
+        if (isFav) favoriteBtnEl.classList.add('favorited'); else favoriteBtnEl.classList.remove('favorited');
+        // update accessible pressed state
+        try{ favoriteBtnEl.setAttribute('aria-pressed', isFav ? 'true' : 'false'); }catch(e){}
+    }
+  }catch(e){/* ignore */}
 }
 
 function playCurrent(){
@@ -107,6 +118,14 @@ function nextTrack(){
   playCurrent();
 }
 
+function previousTrack(){
+  if (!state.queue.length) return;
+  // move cursor back one, wrap to end when at 0
+  state.cursor = (state.cursor - 1 + state.queue.length) % state.queue.length;
+  setTrackInUI(state.queue[state.cursor]);
+  playCurrent();
+}
+
 function newRandomSong(){
   if (!state.queue.length) return;
   const idx = pickRandomIndex(state.queue.length, state.cursor);
@@ -118,17 +137,27 @@ function newRandomSong(){
 function favoriteCurrent(){
   const cur = state.queue[state.cursor];
   if (!cur) return;
-
-  // 1) persist unique favorite
   const k = keyOf(cur);
   const exists = state.favorites.some(t => keyOf(t) === k);
-  if (!exists){
+  if (exists){
+    // remove favorite
+    state.favorites = state.favorites.filter(t => keyOf(t) !== k);
+  } else {
+    // add favorite
     state.favorites.push(cur);
-    saveJSON('guest_favorites', state.favorites);
   }
-
-  // 2) append a flagged copy to the end of the queue so it plays again later
-  state.queue.push({ ...cur, fav: true });
+  saveJSON('guest_favorites', state.favorites);
+  // update button UI
+  const favoriteBtnEl = document.getElementById('favoriteBtn');
+  if (favoriteBtnEl){
+    if (exists) {
+      favoriteBtnEl.classList.remove('favorited');
+      try{ favoriteBtnEl.setAttribute('aria-pressed','false'); }catch(e){}
+    } else {
+      favoriteBtnEl.classList.add('favorited');
+      try{ favoriteBtnEl.setAttribute('aria-pressed','true'); }catch(e){}
+    }
+  }
   renderQueue();
 }
 
@@ -174,6 +203,7 @@ function initPlayer() {
   const newPick = document.getElementById('newPick');
 
   const playPauseBtn = document.getElementById('playPauseBtn');
+  const prevBtn = document.getElementById('prevBtn');
   const skipBtn = document.getElementById('skipBtn');
   const newSongBtn = document.getElementById('newSongBtn');
   const favoriteBtn = document.getElementById('favoriteBtn');
@@ -194,19 +224,52 @@ function initPlayer() {
   setTrackInUI(state.queue[state.cursor]);
 
   // Wire controls
+  // Helper to update the play/pause button icon
+  function setPlayButtonState(isPlaying){
+    if (!playPauseBtn) return;
+    if (isPlaying){
+      playPauseBtn.classList.add('playing');
+      playPauseBtn.innerHTML = `
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="6" y="5" width="4" height="14" fill="currentColor" />
+          <rect x="14" y="5" width="4" height="14" fill="currentColor" />
+        </svg>`;
+    } else {
+      playPauseBtn.classList.remove('playing');
+      playPauseBtn.innerHTML = `
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M5 3v18l15-9L5 3z" fill="currentColor"/>
+        </svg>`;
+    }
+  }
+
+  // Initialize button icon based on current audio state
+  setPlayButtonState(!(audio.paused));
+
   if (playPauseBtn) playPauseBtn.addEventListener('click', () => {
     if (audio.paused) {
       audio.play().catch(()=>{});
       // user initiated play — reveal share immediately
       revealShareOnce();
-    } else audio.pause();
+    } else {
+      audio.pause();
+    }
+    // Icon update is handled by the audio event listeners below
   });
+
+  // Keep the button icon in sync with actual playback state
+  audio.addEventListener('play', () => setPlayButtonState(true));
+  audio.addEventListener('pause', () => setPlayButtonState(false));
+  if (prevBtn) prevBtn.addEventListener('click', previousTrack);
   if (skipBtn) skipBtn.addEventListener('click', nextTrack);
   if (newSongBtn) newSongBtn.addEventListener('click', newRandomSong);
   if (favoriteBtn) favoriteBtn.addEventListener('click', favoriteCurrent);
   if (newPick) newPick.addEventListener('click', () => {
-    sessionStorage.removeItem('guest_mood');
-    window.location.href = 'index.html';
+    // Clear the guest mood and navigate to the mood generator so the user can pick a different mood
+    try { sessionStorage.removeItem('guest_mood'); } catch(e){}
+    try { const a = document.getElementById('audio'); if (a && !a.paused) a.pause(); } catch(e){}
+    // Prefer the guest mood generator page; fall back to index.html if it doesn't exist
+    window.location.href = 'guest_home.html';
   });
 
   // Auto-advance when the song ends
@@ -242,6 +305,14 @@ function initPlayer() {
   // Show modal when icon clicked
   if (shareBtn) shareBtn.addEventListener('click', () => {
     if (shareModal) shareModal.classList.remove('hidden');
+  });
+
+  // Home button: go back to mood picker (index.html)
+  const homeBtn = document.getElementById('homeBtn');
+  if (homeBtn) homeBtn.addEventListener('click', () => {
+    // clear the guest mood and navigate back to the generator
+    try { sessionStorage.removeItem('guest_mood'); } catch(e){}
+    window.location.href = 'index.html';
   });
 
   // Cancel/hide modal
