@@ -27,7 +27,8 @@ body{
   background-image: url('images/background2-1.jpg'); 
   background-size: cover;      
   background-position: center;  
-  background-repeat: no-repeat; 
+  background-repeat: no-repeat;
+  background-attachment: fixed; 
   min-height: 100%;
 }
 
