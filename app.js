@@ -136,7 +136,3 @@ if (playPauseBtn) {
 }
 
 window.addEventListener('DOMContentLoaded', initPlayer);
-
-
-//THIS WAS THE WORKING PROJECT
-// DONT Dele
