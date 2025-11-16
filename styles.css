@@ -183,7 +183,7 @@ body{
 .player-actions{display:flex;align-items:center;gap:.5rem}
 .player-actions .icon-btn{width:40px;height:40px}
 
-#/* Specific styling for the Instagram share button */
+/* Specific styling for the Instagram share button */
 #shareBtn{
   background:transparent;
   border:none; /* remove circular outline */
