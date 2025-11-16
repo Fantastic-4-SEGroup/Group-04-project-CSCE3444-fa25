@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+        .video-box {
+            width: 100%;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        .video-box video {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: var(--radius-xl);
+        }
+
+    </style>
+</head>
+<body class="bg-gradient">
+    <header class="nav">
+        <div class="nav__left">
+            <!-- Logo slot -->
+      <div class="logo" aria-label="MoodSync'd logo" href="index.html"><img src="images/musical-note.png" alt="Two consecutive white musical notes" width="20" height="15"> MoodSync’d</div>
+    </div>
+    <nav class="nav__right" aria-label="Primary">
+      <a class="nav__link" id="welcomeLink">Welcome, Guest</a>
+      <a href="index.html" class="nav__link">Home</a>
+      <a href="#" class="nav__link">About</a>
+      <a href="tutorial.html" class="nav__link">How it Works</a>
+      <div class="dropdown">
+        <button class="nav__link dropbtn" aria-haspopup="true" aria-expanded="false">Menu</button>
+        <div class="dropdown-content">
+          <a href="#">Settings</a>
+          <a href="#">Calendar</a>
+      </div>
+    </div>
+    </nav>
+  </header>
+
+    <div class="container">
+        <h1 class="headline">How to Use MoodSync'd</h1>
+            <div class="card">
+                <div class="video-box">
+                    <video controls autoplay> tutorial.mp4 </video>
+                </div>
+            </div>
+        </div>
+</body>
+</html>
+
+        
