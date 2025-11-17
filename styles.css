@@ -526,3 +526,79 @@ input[type="password"]:focus {
     border-radius: 8px;
     margin-bottom: 0.5rem;
 }
+
+/* Calendar Styles */
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.calendar-header button {
+  background: var(--cta);
+  color: var(--cta-ink);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.calendar-day {
+  padding: 0.8rem;
+  border-radius: 8px;
+  background: var(--chip);
+  color: var(--chip-ink);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px; /* Ensure consistent height */
+}
+
+.calendar-day.empty {
+  background: transparent;
+}
+
+/* Mood Colors for Calendar */
+.calendar-day.happy, .key-color.happy { background-color: #FFD700; } /* Gold */
+.calendar-day.sad, .key-color.sad { background-color: #6495ED; } /* Cornflower Blue */
+.calendar-day.workout, .key-color.workout { background-color: #FF4500; } /* Orange Red */
+.calendar-day.study, .key-color.study { background-color: #9ACD32; } /* Yellow Green */
+.calendar-day.calm, .key-color.calm { background-color: #87CEEB; } /* Sky Blue */
+.calendar-day.rage, .key-color.rage { background-color: #DC143C; } /* Crimson */
+
+/* Color Key Styles */
+.color-key {
+  margin-top: 2rem;
+  padding: 1rem;
+  background: var(--chip);
+  border-radius: var(--radius-lg);
+}
+
+.color-key h3 {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.key-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.key-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+  border: 1px solid rgba(0,0,0,0.1);
+}
