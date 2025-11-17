@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - MoodSync</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gradient">
+    <header>
+        <div class="logo">
+            <img src="images/musical-note.png" alt="MoodSync Logo">
+            <h1>MoodSync</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="created-user-home.html">Home</a></li>
+                <li><a href="player.html">Player</a></li>
+                <li><a href="preferences.html">Preferences</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropbtn">Menu</a>
+                    <div class="dropdown-content">
+                        <a href="settings.html">Settings</a>
+                        <a href="signout.html">Sign Out</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="settings-container">
+            <h2>Settings</h2>
+            <div class="user-info">
+                <h3>User Information</h3>
+                <p><strong>Username:</strong> <span id="username"></span></p>
+                <p><strong>Email:</strong> <span id="email"></span></p>
+                <button id="edit-info-btn">Edit Information</button>
+            </div>
+            <div class="music-preferences">
+                <h3>Music Preferences</h3>
+                <p>Your preferred genres and moods will be displayed here.</p>
+            </div>
+            <div id="parent-controls" class="parent-controls" style="display: none;">
+                <h3>Age Restriction</h3>
+                <div id="parent-view" style="display: none;">
+                    <p>Add or remove child accounts from age restriction.</p>
+                    <div class="add-child-form">
+                        <input type="email" id="child-email" placeholder="Child's email">
+                        <button id="add-child-btn">Add Child</button>
+                    </div>
+                    <h4>Restricted Accounts:</h4>
+                    <div id="children-list"></div>
+                </div>
+                <div id="child-view" style="display: none;">
+                    <p>Age restriction mode is currently enabled for your account.</p>
+                </div>
+            </div>
+            <div class="account-actions">
+                <h3>Account Actions</h3>
+                <button id="delete-account-btn">Delete Account</button>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 MoodSync</p>
+    </footer>
+    <script src="settings.js" type="module"></script>
+</body>
+</html>

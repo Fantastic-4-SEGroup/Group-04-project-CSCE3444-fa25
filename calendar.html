@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MoodSync’d — Calendar</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="calendar.js"></script>
+</head>
+<body class="bg-gradient">
+  <!-- Nav -->
+  <header class="nav">
+    <div class="nav__left">
+      <!-- Logo slot -->
+      <div class="logo" aria-label="MoodSync'd logo" href="index.html"><img src="images/musical-note.png" alt="Two consecutive white musical notes" width="20" height="15"> MoodSync’d</div>
+    </div>
+    <nav class="nav__right" aria-label="Primary">
+      <a class="nav__link" id="welcomeLink">Welcome, User</a>
+      <a href="created-user-home.html" class="nav__link">Home</a>
+      <a href="#" class="nav__link">About</a>
+      <a href="tutorial.html" class="nav__link">How it Works</a>
+      <div class="dropdown">
+        <button class="nav__link dropbtn" aria-haspopup="true" aria-expanded="false">Menu</button>
+        <div class="dropdown-content">
+          <a href="settings.html">Settings</a>
+          <a href="calendar.html">Calendar</a>
+          <a href="signout.html">Sign Out</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main -->
+  <main class="container">
+    <h1 class="headline">Your Mood Calendar</h1>
+
+    <section class="card">
+      <div class="calendar-header">
+        <button id="prevMonthBtn">&lt;</button>
+        <h2 id="currentMonthYear"></h2>
+        <button id="nextMonthBtn">&gt;</button>
+      </div>
+      <div class="calendar-grid" id="calendarGrid">
+        <!-- Calendar days will be inserted here by JavaScript -->
+      </div>
+      <div class="color-key">
+        <h3>Mood Color Key</h3>
+        <div class="key-item"><span class="key-color happy"></span> Happy</div>
+        <div class="key-item"><span class="key-color sad"></span> Sad</div>
+        <div class="key-item"><span class="key-color workout"></span> Work Out</div>
+        <div class="key-item"><span class="key-color study"></span> Study</div>
+        <div class="key-item"><span class="key-color calm"></span> Calm</div>
+        <div class="key-item"><span class="key-color rage"></span> Rage</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <small>© <span id="year"></span> MoodSync’d</small>
+  </footer>
+</body>
+</html>
