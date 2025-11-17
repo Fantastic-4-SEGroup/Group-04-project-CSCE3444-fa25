@@ -45,6 +45,21 @@ submit.addEventListener("click", async function (event) {
       displayName: username || firstName || "User"
     });
 
+    let role = 'user';
+    let age = null; // Initialize age
+    if (birthdate) {
+        const birthDate = new Date(birthdate);
+        age = new Date().getFullYear() - birthDate.getFullYear();
+        const m = new Date().getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && new Date().getDate() < birthDate.getDate())) {
+            age--;
+        }
+        // As per the new requirement: if under 18 and not connected to a parent, treat as 'parent' for restrictions.
+        // If 18 or over, they are also a 'parent'.
+        // So, if a birthdate is provided, the role will be 'parent' at creation.
+        role = 'parent';
+    }
+
     await setDoc(doc(db, "users", user.uid), {
       uid: user.uid,
       email: user.email,
@@ -52,9 +67,16 @@ submit.addEventListener("click", async function (event) {
       firstName: firstName,
       lastName: lastName,
       birthdate: birthdate,
+      role: role,
       createdAt: new Date(),
       preferencesSet: false
     });
+
+    // Set userRole and userAge in sessionStorage
+    sessionStorage.setItem('userRole', role);
+    if (age !== null) {
+        sessionStorage.setItem('userAge', age.toString());
+    }
 
     // After sign up, require new users to pick their preferred genres one time.
     window.location.href = "preferences.html";

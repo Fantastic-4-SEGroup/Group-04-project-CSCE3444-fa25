@@ -112,6 +112,11 @@ body{
   background:#eef6ff;
 }
 
+.chip.is-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* CTA */
 .cta{
   margin:1.25rem auto .25rem;
@@ -501,3 +506,23 @@ input[type="password"]:focus {
 .favorites-item{display:flex;align-items:center;gap:.5rem;padding:.35rem .4rem;border-radius:8px;cursor:pointer}
 .favorites-item:hover{background:rgba(11,26,42,.04)}
 .favorites-empty{opacity:.7;padding:.5rem .4rem}
+
+/* Parent Controls */
+.parent-controls {
+    margin-top: 2rem;
+}
+
+.add-child-form {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+#children-list .child {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}

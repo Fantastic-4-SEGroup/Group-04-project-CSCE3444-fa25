@@ -56,7 +56,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 const user = auth.currentUser;
                 if (user) {
                     try {
-                        // In a real app, you'd also want to clean up user data from Firestore and other services.
+                        const userDocRef = doc(db, "users", user.uid);
+                        const userDoc = await getDoc(userDocRef);
+                        if (userDoc.exists() && userDoc.data().role === 'parent') {
+                            const parentControlsRef = doc(db, "parentalControls", user.uid);
+                            const parentControlsDoc = await getDoc(parentControlsRef);
+                            if (parentControlsDoc.exists()) {
+                                const children = parentControlsDoc.data().children || [];
+                                const batch = writeBatch(db);
+
+                                // Update associated children's roles
+                                for (const child of children) {
+                                    const childUserRef = doc(db, "users", child.childUid);
+                                    batch.update(childUserRef, { role: 'user', parentUid: null });
+                                }
+                                // Delete the parentalControls document
+                                batch.delete(parentControlsRef);
+                                await batch.commit();
+                            }
+                        }
+
                         await deleteUser(user);
                         alert('Account deleted successfully.');
                         window.location.href = 'index.html';
@@ -69,4 +88,169 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    async function handleParentControls(user) {
+        const userDocRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+            const userData = userDoc.data();
+            if (userData.role === 'parent') {
+                parentControlsSection.style.display = 'block';
+                parentView.style.display = 'block';
+                childView.style.display = 'none';
+                await checkChildrensAges(user.uid);
+                await loadChildrenList(user.uid);
+            } else if (userData.role === 'child') {
+                parentControlsSection.style.display = 'block';
+                parentView.style.display = 'none';
+                childView.style.display = 'block';
+            }
+        }
+    }
+
+    async function checkChildrensAges(parentUid) {
+        const parentControlsRef = doc(db, "parentalControls", parentUid);
+        const parentControlsDoc = await getDoc(parentControlsRef);
+        if (parentControlsDoc.exists()) {
+            const children = parentControlsDoc.data().children || [];
+            const batch = writeBatch(db);
+            let changesMade = false;
+
+            for (const child of children) {
+                const childUserDoc = await getDoc(doc(db, "users", child.childUid));
+                if (childUserDoc.exists()) {
+                    const childData = childUserDoc.data();
+                    if (childData.birthdate) {
+                        const birthDate = new Date(childData.birthdate);
+                        let age = new Date().getFullYear() - birthDate.getFullYear();
+                        const m = new Date().getMonth() - birthDate.getMonth();
+                        if (m < 0 || (m === 0 && new Date().getDate() < birthDate.getDate())) {
+                            age--;
+                        }
+                        if (age >= 18) {
+                            changesMade = true;
+                            const childUserRef = doc(db, "users", child.childUid);
+                            batch.update(childUserRef, { role: 'user', parentUid: null });
+                        }
+                    }
+                }
+            }
+
+            if (changesMade) {
+                const updatedChildren = children.filter(async (child) => {
+                    const childUserDoc = await getDoc(doc(db, "users", child.childUid));
+                    if (childUserDoc.exists()) {
+                        const childData = childUserDoc.data();
+                        if (childData.birthdate) {
+                            const birthDate = new Date(childData.birthdate);
+                            let age = new Date().getFullYear() - birthDate.getFullYear();
+                            const m = new Date().getMonth() - birthDate.getMonth();
+                            if (m < 0 || (m === 0 && new Date().getDate() < birthDate.getDate())) {
+                                age--;
+                            }
+                            return age < 18;
+                        }
+                    }
+                    return true;
+                });
+                batch.update(parentControlsRef, { children: updatedChildren });
+                await batch.commit();
+            }
+        }
+    }
+
+    async function loadChildrenList(parentUid) {
+        const parentControlsRef = doc(db, "parentalControls", parentUid);
+        const parentControlsDoc = await getDoc(parentControlsRef);
+        childrenListDiv.innerHTML = '';
+        if (parentControlsDoc.exists()) {
+            const children = parentControlsDoc.data().children || [];
+            for (const child of children) {
+                const childUserDoc = await getDoc(doc(db, "users", child.childUid));
+                if (childUserDoc.exists()) {
+                    const childData = childUserDoc.data();
+                    const childDiv = document.createElement('div');
+                    childDiv.classList.add('child');
+                    childDiv.innerHTML = `
+                        <span>${childData.email}</span>
+                        <button data-child-uid="${child.childUid}">Remove</button>
+                    `;
+                    childrenListDiv.appendChild(childDiv);
+                }
+            }
+        }
+    }
+
+    if (addChildBtn) {
+        addChildBtn.addEventListener('click', async () => {
+            const childEmail = childEmailInput.value.trim();
+            if (!childEmail) {
+                alert('Please enter a child\'s email.');
+                return;
+            }
+
+            const usersRef = collection(db, "users");
+            const q = query(usersRef, where("email", "==", childEmail));
+            const querySnapshot = await getDocs(q);
+
+            if (querySnapshot.empty) {
+                alert('User with this email does not exist.');
+                return;
+            }
+
+            const childUserDoc = querySnapshot.docs[0];
+            const childUid = childUserDoc.id;
+
+            const parentUid = currentUser.uid;
+            const parentControlsRef = doc(db, "parentalControls", parentUid);
+            const parentControlsDoc = await getDoc(parentControlsRef);
+
+            const batch = writeBatch(db);
+
+            if (parentControlsDoc.exists()) {
+                const children = parentControlsDoc.data().children || [];
+                if (children.some(c => c.childUid === childUid)) {
+                    alert('This child is already in your restricted list.');
+                    return;
+                }
+                batch.update(parentControlsRef, {
+                    children: [...children, { childUid: childUid, ageRestrictedMusicEnabled: true }]
+                });
+            } else {
+                batch.set(parentControlsRef, {
+                    children: [{ childUid: childUid, ageRestrictedMusicEnabled: true }]
+                });
+            }
+
+            const childUserRef = doc(db, "users", childUid);
+            batch.update(childUserRef, { role: 'child', parentUid: parentUid });
+
+            await batch.commit();
+            await loadChildrenList(parentUid);
+            childEmailInput.value = '';
+        });
+    }
+
+    childrenListDiv.addEventListener('click', async (event) => {
+        if (event.target.tagName === 'BUTTON') {
+            const childUid = event.target.dataset.childUid;
+            const parentUid = currentUser.uid;
+
+            const parentControlsRef = doc(db, "parentalControls", parentUid);
+            const parentControlsDoc = await getDoc(parentControlsRef);
+
+            if (parentControlsDoc.exists()) {
+                const children = parentControlsDoc.data().children || [];
+                const updatedChildren = children.filter(c => c.childUid !== childUid);
+
+                const batch = writeBatch(db);
+                batch.update(parentControlsRef, { children: updatedChildren });
+
+                const childUserRef = doc(db, "users", childUid);
+                batch.update(childUserRef, { role: 'user', parentUid: null });
+
+                await batch.commit();
+                await loadChildrenList(parentUid);
+            }
+        }
+    });
 });
