@@ -31,21 +31,28 @@ function pickRandomIndex(length) {
   return Math.floor(Math.random() * length);
 }
 
-async function fetchTracks(mood) {
+async function fetchTracks() {
   try {
     const hostRes = await fetch('https://api.audius.co');
     const hostData = await hostRes.json();
     const host = hostData.data[0];
 
-    // Fetch tracks for the selected mood
-    const res = await fetch(`${host}/v1/tracks/search?query=${encodeURIComponent(mood)}&app_name=MoodSync`);
+    // Get mood and genres
+    const mood = sessionStorage.getItem('guest_mood') || '';
+    const genres = JSON.parse(localStorage.getItem('user_genres')) || [];
+
+    // Combine mood + genres equally
+    const query = [mood, ...genres].join(' ');
+
+    // Fetch tracks only (not playlists)
+    const res = await fetch(`${host}/v1/tracks/search?query=${encodeURIComponent(query)}}&app_name=MoodSync`);
     const json = await res.json();
 
+    // Map only individual tracks
     return json.data.map(track => ({
       title: track.title,
       artist: track.user.name,
       cover: track.artwork?.['150x150'] || 'images/default_album_icon.jpg',
-      // Use official stream endpoint for reliability
       audio: `${host}/v1/tracks/${track.id}/stream?app_name=MoodSync`
     }));
   } catch (error) {
