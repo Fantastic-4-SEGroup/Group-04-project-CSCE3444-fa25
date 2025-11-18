@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Share Preview — MoodSync'd</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .share-preview{max-width:900px;margin:2rem auto;padding:1rem;background:rgba(255,255,255,0.95);border-radius:12px}
+    .preview-image{width:100%;height:auto;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.12)}
+    .caption{margin-top:1rem;font-weight:700;font-size:1.1rem}
+    .mood-pill{display:inline-block;margin-top:0.75rem;padding:.45rem .9rem;border-radius:999px;background:#0b0b0b;color:#fff;font-weight:700}
+    .share-actions{display:flex;gap:.5rem;margin-top:1rem}
+    .share-actions button{padding:.6rem .9rem;border-radius:8px;border:none;cursor:pointer}
+    .btn-download{background:#0b2a64;color:#fff}
+    .btn-copy{background:#eee}
+    .btn-open{background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);color:#fff}
+    .instructions{margin-top:1rem;color:#334155}
+  </style>
+</head>
+<body class="bg-gradient">
+  <main class="container">
+    <section class="share-preview">
+      <h2>Share Preview</h2>
+      <div>
+        <img id="previewImage" class="preview-image" alt="Preview image" src="" />
+      </div>
+      <div class="caption" id="previewCaption"></div>
+      <div id="previewMood" class="mood-pill" style="display:none"></div>
+
+      <div class="share-actions">
+        <button id="downloadBtn" class="btn-download">Download Image</button>
+        <button id="copyBtn" class="btn-copy">Copy Caption</button>
+        <button id="openBtn" class="btn-open">Open Instagram</button>
+      </div>
+
+      <div class="instructions">
+        If Instagram opens, you can add the downloaded image to your Story and paste the caption. On mobile, the Open Instagram action attempts to open the Instagram app.
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Load the image and caption from sessionStorage
+    const imgEl = document.getElementById('previewImage');
+    const capEl = document.getElementById('previewCaption');
+    const moodEl = document.getElementById('previewMood');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const openBtn = document.getElementById('openBtn');
+
+    const dataUrl = sessionStorage.getItem('share_image');
+    const caption = sessionStorage.getItem('share_caption') || '';
+    const mood = sessionStorage.getItem('share_mood') || '';
+
+    if (dataUrl) imgEl.src = dataUrl;
+    capEl.textContent = caption;
+    if (mood){ moodEl.style.display = 'inline-block'; moodEl.textContent = mood; }
+
+    downloadBtn.addEventListener('click', () => {
+      if (!dataUrl) return alert('No image available');
+      const a = document.createElement('a');
+      a.href = dataUrl; a.download = 'moodstory.png'; document.body.appendChild(a); a.click(); a.remove();
+    });
+
+    copyBtn.addEventListener('click', async () => {
+      try{ await navigator.clipboard.writeText(caption); alert('Caption copied to clipboard'); }
+      catch(e){ alert('Could not copy caption'); }
+    });
+
+    openBtn.addEventListener('click', () => {
+      // Attempt to open Instagram app (best-effort); also open Instagram web as fallback
+      const ua = navigator.userAgent || '';
+      const isAndroid = /Android/i.test(ua);
+      const isiOS = /iPhone|iPad|iPod/i.test(ua);
+      if (isAndroid){
+        // Use an intent to open Instagram
+        try{ window.location.href = 'intent://instagram.com/#Intent;package=com.instagram.android;scheme=https;end'; return; } catch(e){}
+      }
+      if (isiOS){
+        try{ window.location.href = 'instagram://app'; return; }catch(e){}
+      }
+      // fallback: open instagram website
+      window.open('https://www.instagram.com/', '_blank');
+    });
+  </script>
+</body>
+</html>
