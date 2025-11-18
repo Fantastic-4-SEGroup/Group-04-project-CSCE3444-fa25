@@ -22,12 +22,12 @@ let currentYear = new Date().getFullYear();
 let userMoods = {}; // Cache for user's moods
 
 const moodColorMap = {
-  "Happy": "happy",
-  "Sad": "sad",
-  "Workout": "workout",
-  "Study": "study",
-  "Calm": "calm",
-  "Rage": "rage"
+  "Energizing": "energizing",
+  "Sentimental": "sentimental",
+  "Empowering": "empowering",
+  "Yearning": "yearning",
+  "Peaceful": "peaceful",
+  "Upbeat": "upbeat"
 };
 
 const calendarGrid = document.getElementById('calendarGrid');

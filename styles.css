@@ -245,37 +245,37 @@ body{
 
 
 /* aura backgrounds for mood buttons */
-.chip[data-mood="Happy"] {
+.chip[data-mood="Energizing"] {
   background-image: url('images/Happy_Button_Hue.jpg');
   background-size: cover;
   background-position: center;
 }
 
-.chip[data-mood="Sad"] {
+.chip[data-mood="Sentimental"] {
   background-image: url('images/Sad_Button_Hue.jpg');
   background-size: cover;
   background-position: center;
 }
 
-.chip[data-mood="Rage"] {
+.chip[data-mood="Upbeat"] {
   background-image: url('images/Rage_Button_Hue.jpg');
   background-size: cover;
   background-position: center;
 }
 
-.chip[data-mood="Workout"] {
+.chip[data-mood="Empowering"] {
   background-image: url('images/WorkOut_Button_Hue.jpg');
   background-size: cover;
   background-position: center;
 }
 
-.chip[data-mood="Study"] {
+.chip[data-mood="Yearning"] {
   background-image: url('images/Study_Button_Hue.jpg');
   background-size: cover;
   background-position: center;
 }
 
-.chip[data-mood="Calm"] {
+.chip[data-mood="Peaceful"] {
   background-image: url('images/Calm_Button_Hue.jpg');
   background-size: cover;
   background-position: center;
@@ -570,12 +570,12 @@ input[type="password"]:focus {
 }
 
 /* Mood Colors for Calendar */
-.calendar-day.happy, .key-color.happy { background-color: #FFD700; } /* Gold */
-.calendar-day.sad, .key-color.sad { background-color: #6495ED; } /* Cornflower Blue */
-.calendar-day.workout, .key-color.workout { background-color: #FF4500; } /* Orange Red */
-.calendar-day.study, .key-color.study { background-color: #9ACD32; } /* Yellow Green */
-.calendar-day.calm, .key-color.calm { background-color: #87CEEB; } /* Sky Blue */
-.calendar-day.rage, .key-color.rage { background-color: #DC143C; } /* Crimson */
+.calendar-day.energizing, .key-color.energizing { background-color: #FFD700; } /* Gold */
+.calendar-day.sentimental, .key-color.sentimental { background-color: #6495ED; } /* Cornflower Blue */
+.calendar-day.empowering, .key-color.empowering { background-color: #FF4500; } /* Orange Red */
+.calendar-day.yearning, .key-color.yearning { background-color: #9ACD32; } /* Yellow Green */
+.calendar-day.peaceful, .key-color.peaceful { background-color: #87CEEB; } /* Sky Blue */
+.calendar-day.upbeat, .key-color.upbeat { background-color: #DC143C; } /* Crimson */
 
 /* Color Key Styles */
 .color-key {
