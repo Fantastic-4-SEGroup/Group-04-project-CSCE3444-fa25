@@ -370,6 +370,8 @@ input[type="password"]:focus {
 .icon-control:hover{ transform:translateY(-2px); }
 .icon-control:active{ transform:translateY(0); }
 .icon-control:focus{ outline:2px solid rgba(11,26,42,.08); outline-offset:3px }
+/* Visual state when sharing is in-progress (temporary) */
+#shareBtn.sharing{ box-shadow: 0 8px 24px rgba(123,66,255,0.18), 0 0 0 6px rgba(123,66,255,0.06); transform: translateY(-1px) scale(0.98); }
 /* Circular shuffle/generate button (first button) - stroked circular arrows */
 #newSongBtn.icon-control{
   width:44px;
