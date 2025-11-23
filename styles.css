@@ -64,6 +64,16 @@ body{
 }
 .nav__link:hover{background:rgba(255,255,255,.3)}
 
+.nav__special{
+  color:#0b1a2a;
+  text-decoration:none;
+  padding:.5rem .75rem;
+  border-radius:12px;
+  display:inline-flex;      /* ensure anchors align like buttons */
+  align-items:center;       /* vertically center text/icons */
+  gap:.25rem;              /* small gap if icon present */
+}
+
 /* Layout */
 .container{
   width:min(1100px, 92%);
@@ -551,13 +561,6 @@ input[type="password"]:focus {
   grid-template-columns: repeat(7, 1fr);
   gap: 0.5rem;
   text-align: center;
-}
-
-.calendar-weekday {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--muted, rgba(0,0,0,0.6));
-  padding: 0.25rem 0.25rem;
 }
 
 .calendar-day {
