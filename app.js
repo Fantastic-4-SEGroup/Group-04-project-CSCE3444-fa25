@@ -52,7 +52,7 @@ async function fetchTracks() {
     return json.data.map(track => ({
       title: track.title,
       artist: track.user.name,
-      cover: track.artwork?.['150x150'] || 'images/default_album_icon.jpg',
+      cover: track.artwork?.['150x150'] || '../images/default_album_icon.jpg',
       audio: `${host}/v1/tracks/${track.id}/stream?app_name=MoodSync`
     }));
   } catch (error) {
@@ -243,8 +243,8 @@ window.addEventListener('DOMContentLoaded', initPlayer);
 
     if (dataUrl){
       try{ sessionStorage.setItem('share_image', dataUrl); sessionStorage.setItem('share_caption', caption); sessionStorage.setItem('share_mood', sessionStorage.getItem('guest_mood') || ''); }catch(e){ console.warn('sessionStorage failure', e); }
-      // open preview and clear modal
-      window.open('share_preview.html', '_blank');
+      // open preview and clear modal (share preview lives under `user/`)
+      window.open('../user/share_preview.html', '_blank');
       shareModal.classList.add('hidden');
       // clear sharing visual state after a short delay
       setTimeout(() => shareBtn.classList.remove('sharing'), 700);

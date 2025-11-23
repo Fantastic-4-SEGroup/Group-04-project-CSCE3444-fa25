@@ -1,4 +1,7 @@
-import { getTodayLoginCountForCurrentUser, getDailyLoginCount } from './dailyLogins.js';
+import { getTodayLoginCountForCurrentUser, getDailyLoginCount, todayKey } from './dailyLogins.js';
+import { recordDailyMood } from './calendar.js';
+import { getAuth } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
 // ---------------- Mood Selection Logic ----------------
 const chips = document.querySelectorAll('.chip');
@@ -14,24 +17,57 @@ chips.forEach(btn => {
   });
 });
 
-const userData = userDoc.data();
-
+// Don't assume firebase/auth or firestore globals exist — fetch them when needed.
 if (generateBtn) {
   generateBtn.addEventListener('click', async () => {
     if (!selectedMood) return;
-    if (userData.role === 'child' && (selectedMood == 'yearning' || selectedMood == 'sentimental')) {
-      alert("Sorry, those moods are not allowed for child accounts.");
-      return;
-    }
-    else{
-      const uid = user.uid;
-      const snap = await getDoc(doc(db, "users", uid));
-      const today = todayKey();
-      const count = snap.exists() ? (snap.data().dailyLogins?.[today] ?? 0) : 0;
 
-      if (count === 1) {
-        // Add to calendar
+    try {
+      const auth = getAuth();
+      const db = getFirestore();
+      const user = auth.currentUser;
+
+      // Determine role safely (guest users simply won't have restrictions)
+      let role = null;
+      if (user) {
+        try {
+          const userSnap = await getDoc(doc(db, 'users', user.uid));
+          role = userSnap.exists() ? (userSnap.data().role || null) : null;
+        } catch (e) {
+          console.warn('Could not load user doc for role check', e);
+        }
       }
+
+      const moodLower = (selectedMood || '').toString().toLowerCase();
+      if (role === 'child' && (moodLower === 'yearning' || moodLower === 'sentimental')) {
+        alert('Sorry, those moods are not allowed for child accounts.');
+        return;
+      }
+
+      // If user is signed in, read today's login count to decide calendar behavior
+      if (user) {
+        try {
+          const snap = await getDoc(doc(db, 'users', user.uid));
+          const today = todayKey();
+          const count = snap.exists() ? (snap.data().dailyLogins?.[today] ?? 0) : 0;
+          if (count === 1) {
+            // First login today: record this mood into the user's calendar
+            try {
+              await recordDailyMood(selectedMood, user.uid);
+            } catch (recErr) {
+              console.warn('Failed to record daily mood to calendar:', recErr);
+            }
+          }
+        } catch (e) {
+          console.warn('Failed to read dailyLogins for calendar logic', e);
+        }
+      }
+
+      sessionStorage.setItem('guest_mood', selectedMood);
+      window.location.href = 'player-user.html';
+    } catch (e) {
+      // If getAuth/getFirestore fail for some reason, still allow the guest flow
+      console.warn('Auth/db not available; proceeding as guest', e);
       sessionStorage.setItem('guest_mood', selectedMood);
       window.location.href = 'player-user.html';
     }
@@ -70,7 +106,7 @@ async function fetchTracks() {
     return json.data.map(track => ({
       title: track.title,
       artist: track.user.name,
-      cover: track.artwork?.['150x150'] || 'images/default_album_icon.jpg',
+      cover: track.artwork?.['150x150'] || '../images/default_album_icon.jpg',
       audio: `${host}/v1/tracks/${track.id}/stream?app_name=MoodSync`
     }));
   } catch (error) {

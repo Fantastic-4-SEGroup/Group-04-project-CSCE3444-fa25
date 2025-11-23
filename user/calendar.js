@@ -81,10 +81,11 @@ function buildDayCell(year, month, day, moodsMap) {
   if (mood) {
     const moodClass = MOOD_CLASS[mood] || mood.toLowerCase().replace(/\s+/g, '-');
     wrapper.classList.add('has-mood', moodClass);
-    const label = document.createElement('div');
-    label.className = 'calendar-mood-label';
-    label.textContent = mood;
-    wrapper.appendChild(label);
+    // Do not render the mood word text in the cell — rely on the CSS
+    // class to show the color. Keep the mood available as a tooltip and
+    // accessible label for screen readers.
+    wrapper.setAttribute('title', mood);
+    wrapper.setAttribute('aria-label', `Mood: ${mood}`);
   }
 
   return wrapper;
@@ -93,6 +94,16 @@ function buildDayCell(year, month, day, moodsMap) {
 function renderCalendarForMonth(year, month, moodsMap) {
   if (!calendarGrid) return;
   calendarGrid.innerHTML = ''; // clear
+
+  // Insert weekday header row (Sun..Sat). These are part of the same
+  // grid so they will occupy the first row above the date cells.
+  const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  for (const wd of weekdays) {
+    const hd = document.createElement('div');
+    hd.className = 'calendar-weekday';
+    hd.textContent = wd;
+    calendarGrid.appendChild(hd);
+  }
 
   const first = new Date(year, month, 1);
   const last = new Date(year, month + 1, 0);

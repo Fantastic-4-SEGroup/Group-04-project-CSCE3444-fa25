@@ -553,6 +553,13 @@ input[type="password"]:focus {
   text-align: center;
 }
 
+.calendar-weekday {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted, rgba(0,0,0,0.6));
+  padding: 0.25rem 0.25rem;
+}
+
 .calendar-day {
   padding: 0.8rem;
   border-radius: 8px;

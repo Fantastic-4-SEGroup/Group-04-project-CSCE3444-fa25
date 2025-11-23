@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import { incrementTodayLoginCount } from "./dailyLogins.js";
 import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-import { getFirestore, collection, query, where, doc, getDocs, updateDoc, setDoc, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDPMnsowBumLJVqV0JYred8mlgdy7gqOaA",
@@ -34,33 +35,19 @@ document.getElementById("loginBtn").addEventListener("click", async (event) => {
 
     const cred = await signInWithEmailAndPassword(auth, identifier, password);
 
-    // After successful sign-in, increment the user's daily login counter in Firestore.
-    // We store counts in a map field `dailyLogins` keyed by YYYY-MM-DD.
+    // After successful sign-in, use the shared helper to atomically increment
+    // today's login counter and update `lastLogin`. The helper handles
+    // creating the doc if missing and returns the updated count.
     try {
-      const uid = cred.user.uid;
-      const userRef = doc(db, "users", uid);
-      const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-
-      // Try to atomically increment today's counter and update lastLogin timestamp.
-      await updateDoc(userRef, {
-        [`dailyLogins.${today}`]: increment(1),
-        lastLogin: serverTimestamp()
-      });
-    } catch (updateErr) {
-      // If updateDoc fails (e.g. user doc missing), create/merge an initial value.
-      try {
-        const uid = (cred && cred.user && cred.user.uid) || (auth.currentUser && auth.currentUser.uid);
-        if (uid) {
-          const userRef = doc(db, "users", uid);
-          const today = new Date().toISOString().slice(0, 10);
-          await setDoc(userRef, {
-            dailyLogins: { [today]: 1 },
-            lastLogin: serverTimestamp()
-          }, { merge: true });
-        }
-      } catch (e) {
-        console.warn('Failed to record daily login:', e);
+      const uid = cred.user?.uid;
+      if (uid) {
+        await incrementTodayLoginCount(uid);
+      } else {
+        // fallback: try incrementing for current auth user
+        await incrementTodayLoginCount();
       }
+    } catch (incErr) {
+      console.warn('Failed to increment daily login via helper:', incErr);
     }
 
     window.location.href = "created-user-home.html";

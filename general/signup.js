@@ -10,6 +10,7 @@ import {
   doc, 
   setDoc 
 } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+import { incrementTodayLoginCount } from "../user/dailyLogins.js";
 
 // Firebase config (same)
 const firebaseConfig = {
@@ -72,6 +73,13 @@ submit.addEventListener("click", async function (event) {
       preferencesSet: false
     });
 
+    // Count this initial account creation as today's first login.
+    try {
+      await incrementTodayLoginCount(user.uid);
+    } catch (incErr) {
+      console.warn('Failed to increment daily login at signup:', incErr);
+    }
+
     // Set userRole and userAge in sessionStorage
     sessionStorage.setItem('userRole', role);
     if (age !== null) {
@@ -79,7 +87,8 @@ submit.addEventListener("click", async function (event) {
     }
 
     // After sign up, require new users to pick their preferred genres one time.
-    window.location.href = "preferences.html";
+    // The preferences page lives under `user/` so use a parent-relative path.
+    window.location.href = "../user/preferences.html";
   } catch (error) {
     alert("Error: " + error.message);
   }
