@@ -1,3 +1,5 @@
+import { getTodayLoginCountForCurrentUser, getDailyLoginCount } from './dailyLogins.js';
+
 // ---------------- Mood Selection Logic ----------------
 const chips = document.querySelectorAll('.chip');
 const generateBtn = document.getElementById('generateBtn');
@@ -12,11 +14,27 @@ chips.forEach(btn => {
   });
 });
 
+const userData = userDoc.data();
+
 if (generateBtn) {
-  generateBtn.addEventListener('click', () => {
+  generateBtn.addEventListener('click', async () => {
     if (!selectedMood) return;
-    sessionStorage.setItem('guest_mood', selectedMood);
-    window.location.href = 'player.html';
+    if (userData.role === 'child' && (selectedMood == 'yearning' || selectedMood == 'sentimental')) {
+      alert("Sorry, those moods are not allowed for child accounts.");
+      return;
+    }
+    else{
+      const uid = user.uid;
+      const snap = await getDoc(doc(db, "users", uid));
+      const today = todayKey();
+      const count = snap.exists() ? (snap.data().dailyLogins?.[today] ?? 0) : 0;
+
+      if (count === 1) {
+        // Add to calendar
+      }
+      sessionStorage.setItem('guest_mood', selectedMood);
+      window.location.href = 'player-user.html';
+    }
   });
 }
 

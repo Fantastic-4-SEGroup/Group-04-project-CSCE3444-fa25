@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Sign Up</title>
-  <link rel="stylesheet" href="styles.css" />
-  <script defer src="app.js"></script>
+  <link rel="stylesheet" href="../styles.css" />
+  <script defer src="../app.js"></script>
 </head>
 
 <body class="bg-gradient">
@@ -13,11 +13,11 @@
   <header class="nav">
     <div class="nav__left">
     <!-- Logo slot -->
-    <div class="logo" aria-label="MoodSync'd logo" href="index.html"><img src="images/musical-note.png" alt="Two consecutive white musical notes" width="20" height="15"> MoodSync’d</div>
+    <div class="logo" aria-label="MoodSync'd logo" href="../index.html"><img src="../images/musical-note.png" alt="Two consecutive white musical notes" width="20" height="15"> MoodSync’d</div>
   </div>
   <nav class="nav__right" aria-label="Primary">
-    <a class="nav__link" id="welcomeLink">Welcome</a>
-    <a href="index.html" class="nav__link">Home</a>
+  <a class="nav__link" id="welcomeLink">Welcome</a>
+  <a href="../index.html" class="nav__link">Home</a>
     <a href="#" class="nav__link">About</a>
     <a href="tutorial.html" class="nav__link">How it Works</a>
     <div class="dropdown">
@@ -40,13 +40,13 @@
         <h2 class="input_f">Username <input type="text" id="username" placeholder="Enter Your Username" required/></h2>
         <h2 class="input_f">Email <input type="email" id="email" placeholder="Enter Your Email" required/></h2>
         <h2 class="input_f">Password <input type="password" id="password" placeholder="Enter Your Password" required/></h2>
-        <h2 class="input_f">Optional Birth Date <input type="date" id="birthdate" placeholder="Enter Your Birth Date" /></h2>
+        <h2 class="input_f">Birthday <input type="date" id="birthdate" placeholder="Enter Your Birth Date" /></h2>
       </form>
       <button id="submit" class="cta">Submit</button>
-      <script type="module" src="create-account.js" defer></script>
+        <script type="module" src="signup.js" defer></script>
 
     </section>
-    <p class="disclaimer">Already have an account? <a href="login.html">Login</a></p>
+    <p class="disclaimer">Already have an account? <a href="../login.html">Login</a></p>
   </main>
 
 </body>

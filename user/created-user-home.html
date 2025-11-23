@@ -5,8 +5,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MoodSync’d — Guest</title>
-  <link rel="stylesheet" href="styles.css" />
-  <script defer src="app.js"></script>
+  <link rel="stylesheet" href="../styles.css" />
+  <script defer src="app-user.js"></script>
 </head>
 
 <body class="bg-gradient">
@@ -14,7 +14,7 @@
   <header class="nav">
     <div class="nav__left">
       <!-- Logo slot -->
-      <div class="logo" aria-label="MoodSync'd logo" href="index.html"><img src="images/musical-note.png" alt="Two consecutive white musical notes" width="20" height="15"> MoodSync’d</div>
+      <div class="logo" aria-label="MoodSync'd logo" href="index.html"><img src="../images/musical-note.png" alt="Two consecutive white musical notes" width="20" height="15"> MoodSync’d</div>
     </div>
     <nav class="nav__right" aria-label="Primary">
       <a class="nav__link" id="welcomeLink">Welcome, Guest</a>
@@ -63,6 +63,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
     // Your same Firebase config
     const firebaseConfig = {
@@ -76,14 +77,36 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
     const welcomeLink = document.getElementById("welcomeLink");
 
     // Listen for auth changes
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
         // If the user has a display name, show it
         const name = user.displayName || user.email;
         welcomeLink.textContent = `Welcome, ${name}`;
+
+        // Check daily login count and show "Daily mood" only on first login today
+        try {
+          const uid = user.uid;
+          const snap = await getDoc(doc(db, "users", uid));
+          const today = todayKey();
+          const count = snap.exists() ? (snap.data().dailyLogins?.[today] ?? 0) : 0;
+
+          if (count === 1) {
+            const banner = document.createElement("div");
+            banner.id = "dailyMoodBanner";
+            banner.textContent = "Daily mood";
+            banner.setAttribute("role", "status");
+            // Minimal inline styling so it appears clean without changing site CSS
+            banner.style.cssText = "margin:0.75rem auto;padding:.5rem 1rem;background:#fff;border-radius:8px;max-width:320px;text-align:center;font-weight:600;color:#0b1a2a";
+            const main = document.querySelector("main.container") || document.body;
+            main.prepend(banner);
+          }
+        } catch (err) {
+          console.warn("Failed to read daily login count:", err);
+        }
       } else {
         // Fallback if user not logged in
         welcomeLink.textContent = "Welcome, Guest";

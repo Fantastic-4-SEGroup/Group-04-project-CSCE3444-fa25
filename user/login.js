@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-import { getFirestore, collection, query, where, doc, getDocs } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+import { getFirestore, collection, query, where, doc, getDocs, updateDoc, setDoc, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDPMnsowBumLJVqV0JYred8mlgdy7gqOaA",
@@ -32,7 +32,37 @@ document.getElementById("loginBtn").addEventListener("click", async (event) => {
       }
     }
 
-    await signInWithEmailAndPassword(auth, identifier, password);
+    const cred = await signInWithEmailAndPassword(auth, identifier, password);
+
+    // After successful sign-in, increment the user's daily login counter in Firestore.
+    // We store counts in a map field `dailyLogins` keyed by YYYY-MM-DD.
+    try {
+      const uid = cred.user.uid;
+      const userRef = doc(db, "users", uid);
+      const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+
+      // Try to atomically increment today's counter and update lastLogin timestamp.
+      await updateDoc(userRef, {
+        [`dailyLogins.${today}`]: increment(1),
+        lastLogin: serverTimestamp()
+      });
+    } catch (updateErr) {
+      // If updateDoc fails (e.g. user doc missing), create/merge an initial value.
+      try {
+        const uid = (cred && cred.user && cred.user.uid) || (auth.currentUser && auth.currentUser.uid);
+        if (uid) {
+          const userRef = doc(db, "users", uid);
+          const today = new Date().toISOString().slice(0, 10);
+          await setDoc(userRef, {
+            dailyLogins: { [today]: 1 },
+            lastLogin: serverTimestamp()
+          }, { merge: true });
+        }
+      } catch (e) {
+        console.warn('Failed to record daily login:', e);
+      }
+    }
+
     window.location.href = "created-user-home.html";
   } catch (error) {
     alert("Login failed: " + error.message);
