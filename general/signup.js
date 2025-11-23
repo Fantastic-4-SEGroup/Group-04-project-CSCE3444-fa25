@@ -1,14 +1,14 @@
 // Import Firebase SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import { 
-  getAuth, 
-  createUserWithEmailAndPassword, 
-  updateProfile 
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile
 } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-import { 
-  getFirestore, 
-  doc, 
-  setDoc 
+import {
+  getFirestore,
+  doc,
+  setDoc
 } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 import { incrementTodayLoginCount } from "../user/dailyLogins.js";
 
@@ -28,6 +28,17 @@ const db = getFirestore(app);
 
 const submit = document.getElementById("submit");
 
+document.addEventListener('DOMContentLoaded', function () {
+  var today = new Date();
+  var dd = String(today.getDate()).padStart(2, '0');
+  var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+  var yyyy = today.getFullYear();
+
+  today = yyyy + '-' + mm + '-' + dd;
+  const bdInput = document.getElementById('birthdate') || document.getElementById('birthday');
+  if (bdInput) bdInput.setAttribute('max', today);
+});
+
 submit.addEventListener("click", async function (event) {
   event.preventDefault();
 
@@ -37,6 +48,19 @@ submit.addEventListener("click", async function (event) {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
   const birthdate = document.getElementById("birthdate").value;
+
+  // Validate birthdate is not in the future (defensive check in case browser ignores `max`)
+  if (birthdate) {
+    const picked = new Date(birthdate);
+    const now = new Date();
+    // normalize by zeroing time portion for comparison
+    picked.setHours(0,0,0,0);
+    now.setHours(0,0,0,0);
+    if (picked > now) {
+      alert('Birthdate cannot be in the future. Please select a valid date.');
+      return;
+    }
+  }
 
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -49,16 +73,16 @@ submit.addEventListener("click", async function (event) {
     let role = 'user';
     let age = null; // Initialize age
     if (birthdate) {
-        const birthDate = new Date(birthdate);
-        age = new Date().getFullYear() - birthDate.getFullYear();
-        const m = new Date().getMonth() - birthDate.getMonth();
-        if (m < 0 || (m === 0 && new Date().getDate() < birthDate.getDate())) {
-            age--;
-        }
-        // As per the new requirement: if under 18 and not connected to a parent, treat as 'parent' for restrictions.
-        // If 18 or over, they are also a 'parent'.
-        // So, if a birthdate is provided, the role will be 'parent' at creation.
-        role = 'parent';
+      const birthDate = new Date(birthdate);
+      age = new Date().getFullYear() - birthDate.getFullYear();
+      const m = new Date().getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && new Date().getDate() < birthDate.getDate())) {
+        age--;
+      }
+      // As per the new requirement: if under 18 and not connected to a parent, treat as 'parent' for restrictions.
+      // If 18 or over, they are also a 'parent'.
+      // So, if a birthdate is provided, the role will be 'parent' at creation.
+      role = 'parent';
     }
 
     await setDoc(doc(db, "users", user.uid), {
@@ -83,7 +107,7 @@ submit.addEventListener("click", async function (event) {
     // Set userRole and userAge in sessionStorage
     sessionStorage.setItem('userRole', role);
     if (age !== null) {
-        sessionStorage.setItem('userAge', age.toString());
+      sessionStorage.setItem('userAge', age.toString());
     }
 
     // After sign up, require new users to pick their preferred genres one time.
