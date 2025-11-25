@@ -15,7 +15,7 @@
       <div class="logo" aria-label="MoodSync'd logo" href="../index.html"><img src="../images/musical-note.png" alt="Two consecutive white musical notes" width="20" height="15"> MoodSync’d</div>
     </div>
     <nav class="nav__right" aria-label="Primary">
-      <a class="nav__special">Welcome, Guest</a>
+      <a id="welcomeLink" class="nav__special">Welcome</a>
       <a href="../index.html" class="nav__link">Home</a>
       <a href="#" class="nav__link">About</a>
       <a href="../general/tutorial.html" class="nav__link">How it Works</a>
@@ -133,6 +133,38 @@
     </footer>
 
   </main>
+      <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+    // Your same Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDPMnsowBumLJVqV0JYred8mlgdy7gqOaA",
+      authDomain: "mood-sync-d-98f90.firebaseapp.com",
+      projectId: "mood-sync-d-98f90",
+      storageBucket: "mood-sync-d-98f90.firebasestorage.app",
+      messagingSenderId: "116363977039",
+      appId: "1:116363977039:web:b5fd844a9ecca38983253a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const welcomeLink = document.getElementById("welcomeLink");
+    const navDropdown = document.getElementById('navDropdown');
+    const homeLink = document.getElementById('homeLink');
+
+    // Listen for auth changes
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const name = user.displayName || user.email;
+        welcomeLink.textContent = `Welcome, ${name}`;
+      } else {
+        welcomeLink.textContent = "Welcome, Guest";
+      }
+    });
+  </script>
 </body>
 </html>
 

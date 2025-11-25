@@ -3,7 +3,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebas
 import {
   getAuth,
   createUserWithEmailAndPassword,
-  updateProfile
+  updateProfile, sendEmailVerification
 } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 import {
   getFirestore,
@@ -26,6 +26,68 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+
+
+// Password authentication
+var myInput = document.getElementById("password");
+var letter = document.getElementById("letter");
+var capital = document.getElementById("capital");
+var number = document.getElementById("number");
+var length = document.getElementById("length");
+
+// When the user clicks on the password field, show the message box
+myInput.onfocus = function () {
+  document.getElementById("message").style.display = "block";
+}
+
+// When the user clicks outside of the password field, hide the message box
+myInput.onblur = function () {
+  document.getElementById("message").style.display = "none";
+}
+
+// When the user starts to type something inside the password field
+myInput.onkeyup = function () {
+  // Validate lowercase letters
+  var lowerCaseLetters = /[a-z]/g;
+  if (myInput.value.match(lowerCaseLetters)) {
+    letter.classList.remove("invalid");
+    letter.classList.add("valid");
+  } else {
+    letter.classList.remove("valid");
+    letter.classList.add("invalid");
+  }
+
+  // Validate capital letters
+  var upperCaseLetters = /[A-Z]/g;
+  if (myInput.value.match(upperCaseLetters)) {
+    capital.classList.remove("invalid");
+    capital.classList.add("valid");
+  } else {
+    capital.classList.remove("valid");
+    capital.classList.add("invalid");
+  }
+
+  // Validate numbers
+  var numbers = /[0-9]/g;
+  if (myInput.value.match(numbers)) {
+    number.classList.remove("invalid");
+    number.classList.add("valid");
+  } else {
+    number.classList.remove("valid");
+    number.classList.add("invalid");
+  }
+
+  // Validate length
+  if (myInput.value.length >= 8) {
+    length.classList.remove("invalid");
+    length.classList.add("valid");
+  } else {
+    length.classList.remove("valid");
+    length.classList.add("invalid");
+  }
+}
+
+// Signup
 const submit = document.getElementById("submit");
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -54,8 +116,8 @@ submit.addEventListener("click", async function (event) {
     const picked = new Date(birthdate);
     const now = new Date();
     // normalize by zeroing time portion for comparison
-    picked.setHours(0,0,0,0);
-    now.setHours(0,0,0,0);
+    picked.setHours(0, 0, 0, 0);
+    now.setHours(0, 0, 0, 0);
     if (picked > now) {
       alert('Birthdate cannot be in the future. Please select a valid date.');
       return;
@@ -63,8 +125,17 @@ submit.addEventListener("click", async function (event) {
   }
 
   try {
+
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
+
+    // Send verification email but do not block account creation if it fails.
+    try {
+      await sendEmailVerification(user);
+      console.log('Email verification sent to', user.email);
+    } catch (e) {
+      console.warn('Failed to send verification email:', e);
+    }
 
     await updateProfile(user, {
       displayName: username || firstName || "User"

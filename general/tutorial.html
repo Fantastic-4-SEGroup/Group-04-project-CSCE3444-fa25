@@ -29,7 +29,7 @@
     </div>
     <nav class="nav__right" aria-label="Primary">
       <a id="welcomeLink" class="nav__special">Welcome</a>
-    <a href="../index.html" class="nav__link">Home</a>
+    <a id="homeLink" href="../index.html" class="nav__link">Home</a>
       <a href="#" class="nav__link">About</a>
     <a href="tutorial.html" class="nav__link">How it Works</a>
       <div id="navDropdown" class="dropdown" style="display:none;">
@@ -72,6 +72,7 @@
     const db = getFirestore(app);
     const welcomeLink = document.getElementById("welcomeLink");
     const navDropdown = document.getElementById('navDropdown');
+    const homeLink = document.getElementById('homeLink');
 
     // Listen for auth changes
     onAuthStateChanged(auth, async (user) => {
@@ -80,10 +81,12 @@
         const name = user.displayName || user.email;
         welcomeLink.textContent = `Welcome, ${name}`;
         if (navDropdown) navDropdown.style.display = '';
+        if (homeLink) homeLink.setAttribute('href', '../user/created-user-home.html');
       } else {
         // Fallback if user not logged in; hide dropdown for guests
         welcomeLink.textContent = "Welcome, Guest";
         if (navDropdown) navDropdown.style.display = 'none';
+        if (homeLink) homeLink.setAttribute('href', '../index.html');
       }
     });
   </script>

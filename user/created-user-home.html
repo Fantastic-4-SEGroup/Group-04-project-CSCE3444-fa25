@@ -17,7 +17,7 @@
       <div class="logo" aria-label="MoodSync'd logo" href="../index.html"><img src="../images/musical-note.png" alt="Two consecutive white musical notes" width="20" height="15"> MoodSync’d</div>
     </div>
     <nav class="nav__right" aria-label="Primary">
-      <a class="nav__special">Welcome, Guest</a>
+      <a id="welcomeLink" class="nav__special">Welcome, Guest</a>
       <a href="created-user-home.html" class="nav__link">Home</a>
       <a href="#" class="nav__link">About</a>
       <a href="../general/tutorial.html" class="nav__link">How it Works</a>
@@ -85,13 +85,14 @@
       if (user) {
         // If the user has a display name, show it
         const name = user.displayName || user.email;
-        welcomeLink.textContent = `Welcome, ${name}`;
+        if (welcomeLink) welcomeLink.textContent = `Welcome, ${name}`;
 
         // Check daily login count and show "Daily mood" only on first login today
         try {
           const uid = user.uid;
           const snap = await getDoc(doc(db, "users", uid));
-          const today = todayKey();
+          // compute today's key locally rather than relying on an external helper
+          const today = new Date().toISOString().slice(0, 10);
           const count = snap.exists() ? (snap.data().dailyLogins?.[today] ?? 0) : 0;
 
           if (count === 1) {
@@ -109,7 +110,7 @@
         }
       } else {
         // Fallback if user not logged in
-        welcomeLink.textContent = "Welcome, Guest";
+        if (welcomeLink) welcomeLink.textContent = "Welcome, Guest";
       }
     });
   </script>

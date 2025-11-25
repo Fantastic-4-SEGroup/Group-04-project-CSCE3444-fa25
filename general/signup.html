@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -12,36 +13,63 @@
   <!-- Nav -->
   <header class="nav">
     <div class="nav__left">
-    <!-- Logo slot -->
-    <div class="logo" aria-label="MoodSync'd logo" href="../index.html"><img src="../images/musical-note.png" alt="Two consecutive white musical notes" width="20" height="15"> MoodSync’d</div>
-  </div>
-  <nav class="nav__right" aria-label="Primary">
-  <a class="nav__special">Welcome, User</a>
-  <a href="../index.html" class="nav__link">Home</a>
-    <a href="#" class="nav__link">About</a>
-    <a href="tutorial.html" class="nav__link">How it Works</a>
-  </div>
-  </nav>
-</header>
+      <!-- Logo slot -->
+      <div class="logo" aria-label="MoodSync'd logo" href="../index.html"><img src="../images/musical-note.png"
+          alt="Two consecutive white musical notes" width="20" height="15"> MoodSync’d</div>
+    </div>
+    <nav class="nav__right" aria-label="Primary">
+      <a class="nav__special">Welcome, User</a>
+      <a href="../index.html" class="nav__link">Home</a>
+      <a href="#" class="nav__link">About</a>
+      <a href="tutorial.html" class="nav__link">How it Works</a>
+      </div>
+    </nav>
+  </header>
 
-<body class="bg-gradient">
-  <main class="container">
-    <h1 class="headline">Sign Up!</h1>
-    <section class="card">
-      <form class="sign_up">
-        <h2 class="input_f">First Name <input type="text" id="firstName" placeholder="Enter Your First Name" required/></h2>
-        <h2 class="input_f">Last Name <input type="text" id="lastName" placeholder="Enter Your Last Name" required/></h2>
-        <h2 class="input_f">Username <input type="text" id="username" placeholder="Enter Your Username" required/></h2>
-        <h2 class="input_f">Email <input type="email" id="email" placeholder="Enter Your Email" required/></h2>
-        <h2 class="input_f">Password <input type="password" id="password" placeholder="Enter Your Password" required/></h2>
-        <h2 class="input_f">Birthday <input type="date" id="birthdate" placeholder="Enter Your Birth Date" required max=""/></h2>
-      </form>
-      <button id="submit" class="cta">Submit</button>
+  <body class="bg-gradient">
+    <main class="container">
+      <h1 class="headline">Sign Up!</h1>
+      <section class="card">
+        <form class="sign_up">
+          <h2 class="input_f">First Name <input type="text" id="firstName" placeholder="Enter Your First Name"
+              required /></h2>
+          <h2 class="input_f">Last Name <input type="text" id="lastName" placeholder="Enter Your Last Name" required />
+          </h2>
+          <h2 class="input_f">Username <input type="text" id="username" placeholder="Enter Your Username" required />
+          </h2>
+          <h2 class="input_f">Email <input type="email" id="email" placeholder="Enter Your Email" required /></h2>
+          <h2 class="input_f">Password <input type="password" id="password" name="psw"
+              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" value="FakePSW"
+              title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
+              placeholder="Enter Your Password" required /></h2>
+          <input type="checkbox" onclick="myFunction()">Show Password
+          <div id="message" style="text-align: left;">
+            <h3>Password must contain the following:</h3>
+            <p id="letter" class="invalid">A <b>lowercase</b> letter</p>
+            <p id="capital" class="invalid">A <b>capital (uppercase)</b> letter</p>
+            <p id="number" class="invalid">A <b>number</b></p>
+            <p id="length" class="invalid">Minimum <b>8 characters</b></p>
+          </div>
+          <h2 class="input_f">Birthday <input type="date" id="birthdate" placeholder="Enter Your Birth Date" required
+              max="" /></h2>
+        </form>
+        <button id="submit" class="cta">Submit</button>
+
         <script type="module" src="signup.js" defer></script>
+        <script>
+          function myFunction() {
+              var x = document.getElementById("password");
+              if (x.type === "password") {
+                x.type = "text";
+              } else {
+                x.type = "password";
+              }
+            }
+        </script>
+      </section>
+      <p class="disclaimer">Already have an account? <a href="../user/login.html">Login</a></p>
+    </main>
 
-    </section>
-    <p class="disclaimer">Already have an account? <a href="../user/login.html">Login</a></p>
-  </main>
+  </body>
 
-</body>
 </html>
