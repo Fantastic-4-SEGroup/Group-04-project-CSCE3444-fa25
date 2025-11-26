@@ -124,6 +124,13 @@ submit.addEventListener("click", async function (event) {
     }
   }
 
+  // Validate password meets requirements: at least 8 chars, one lower, one upper, one digit
+  const pwdPattern = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/;
+  if (!pwdPattern.test(password)) {
+    alert('Password must be at least 8 characters and include at least one uppercase letter, one lowercase letter, and one number.');
+    return;
+  }
+
   try {
 
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);

@@ -15,7 +15,7 @@
       <div class="logo" aria-label="MoodSync'd logo" href="../index.html"><img src="../images/musical-note.png" alt="Two consecutive white musical notes" width="20" height="15"> MoodSync’d</div>
     </div>
     <nav class="nav__right" aria-label="Primary">
-      <a class="nav__special">Welcome, Guest</a>
+      <a id="welcomeLink" class="nav__special">Welcome, Guest</a>
       <a href="created-user-home.html" class="nav__link">Home</a>
       <a href="#" class="nav__link">About</a>
       <a href="../general/tutorial.html" class="nav__link">How it Works</a>
@@ -166,10 +166,41 @@
       if (user) {
         // If the user has a display name, show it
         const name = user.displayName || user.email;
-        welcomeLink.textContent = `Welcome, ${name}`;
+        if (welcomeLink) welcomeLink.textContent = `Welcome, ${name}`;
+
+        // Show today's mood if it exists so it persists after refresh.
+        // If this is the first login today (count === 1) and no mood
+        // has been recorded in the calendar yet, show the Daily mood prompt.
+        try {
+          const uid = user.uid;
+          const snap = await getDoc(doc(db, "users", uid));
+          const today = new Date().toISOString().slice(0, 10);
+          const data = snap.exists() ? snap.data() : {};
+          const mood = data?.dailyMoods?.[today] ?? null;
+          const count = data?.dailyLogins?.[today] ?? 0;
+
+          if (mood) {
+            const moodTitle = document.getElementById('moodTitle');
+            if (moodTitle) {
+              moodTitle.textContent = `Today's mood: ${mood}`;
+            }
+          } else if (count === 1 && !mood) {
+            // Only show the banner when it's the user's first login today
+            // and they haven't already recorded a mood for today.
+            const banner = document.createElement("div");
+            banner.id = "dailyMoodBanner";
+            banner.textContent = "Daily mood";
+            banner.setAttribute("role", "status");
+            banner.style.cssText = "margin:0.75rem auto;padding:.5rem 1rem;background:#fff;border-radius:8px;max-width:320px;text-align:center;font-weight:600;color:#0b1a2a";
+            const main = document.querySelector("main.container") || document.body;
+            main.prepend(banner);
+          }
+        } catch (err) {
+          console.warn('Failed to load today\'s mood:', err);
+        }
       } else {
         // Fallback if user not logged in
-        welcomeLink.textContent = "Welcome, Guest";
+        if (welcomeLink) welcomeLink.textContent = "Welcome, Guest";
       }
     });
   </script>

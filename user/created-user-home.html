@@ -93,9 +93,13 @@
           const snap = await getDoc(doc(db, "users", uid));
           // compute today's key locally rather than relying on an external helper
           const today = new Date().toISOString().slice(0, 10);
-          const count = snap.exists() ? (snap.data().dailyLogins?.[today] ?? 0) : 0;
+          const data = snap.exists() ? snap.data() : {};
+          const count = data?.dailyLogins?.[today] ?? 0;
+          const todayMood = data?.dailyMoods?.[today];
 
-          if (count === 1) {
+          // Show the daily mood prompt only on the first login of the day
+          // and only if the user hasn't already recorded a mood for today.
+          if (count === 1 && !todayMood) {
             const banner = document.createElement("div");
             banner.id = "dailyMoodBanner";
             banner.textContent = "Daily mood";
