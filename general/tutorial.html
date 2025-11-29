@@ -80,13 +80,9 @@
         // If the user has a display name, show it and reveal the dropdown
         const name = user.displayName || user.email;
         welcomeLink.textContent = `Welcome, ${name}`;
-        if (navDropdown) navDropdown.style.display = '';
-        if (homeLink) homeLink.setAttribute('href', '../user/created-user-home.html');
       } else {
         // Fallback if user not logged in; hide dropdown for guests
         welcomeLink.textContent = "Welcome, Guest";
-        if (navDropdown) navDropdown.style.display = 'none';
-        if (homeLink) homeLink.setAttribute('href', '../index.html');
       }
     });
   </script>
