@@ -258,3 +258,27 @@ window.addEventListener('DOMContentLoaded', initPlayer);
   });
 
 })();
+
+// ---------------- Home / Back to mood chooser ----------------
+function wireHomeButton(){
+  const btn = document.getElementById('newPick');
+  if (!btn) return;
+  btn.addEventListener('click', (e)=>{
+    e.preventDefault();
+    try{ sessionStorage.removeItem('guest_mood'); }catch(e){}
+    try{ const audio = document.getElementById('audio'); if(audio){ audio.pause(); } }catch(e){}
+    const path = window.location.pathname || '';
+    // Navigate to the appropriate mood-picker page depending on whether we're in /guest/ or /user/.
+    // Use origin-aware absolute URLs when served over HTTP(S); fall back to relative paths for file://.
+    const target = /[/\\]user[/\\]/.test(path) ? '/user/created-user-home.html' : '/guest/guest_home.html';
+    if (location.protocol && (location.protocol === 'http:' || location.protocol === 'https:')){
+      window.location.href = `${location.origin}${target}`;
+    } else {
+      // relative fallback
+      if (/[/\\]guest[/\\]/.test(path)) window.location.href = '../guest/guest_home.html';
+      else if (/[/\\]user[/\\]/.test(path)) window.location.href = '../user/created-user-home.html';
+      else window.location.href = 'guest/guest_home.html';
+    }
+  });
+}
+document.addEventListener('DOMContentLoaded', wireHomeButton);

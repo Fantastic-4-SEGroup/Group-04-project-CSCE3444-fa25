@@ -312,3 +312,24 @@ window.addEventListener('DOMContentLoaded', initPlayer);
   });
 
 })();
+
+// ---------------- Home / Back to mood chooser (user) ----------------
+function wireHomeButtonUser(){
+  const btn = document.getElementById('newPick');
+  if (!btn) return;
+  btn.addEventListener('click', (e)=>{
+    e.preventDefault();
+    try{ sessionStorage.removeItem('guest_mood'); }catch(e){}
+    try{ const audio = document.getElementById('audio'); if(audio){ audio.pause(); } }catch(e){}
+    const path = window.location.pathname || '';
+    const target = /[/\\]user[/\\]/.test(path) ? '/user/created-user-home.html' : '/guest/guest_home.html';
+    if (location.protocol && (location.protocol === 'http:' || location.protocol === 'https:')){
+      window.location.href = `${location.origin}${target}`;
+    } else {
+      if (/[/\\]user[/\\]/.test(path)) window.location.href = '../user/created-user-home.html';
+      else if (/[/\\]guest[/\\]/.test(path)) window.location.href = '../guest/guest_home.html';
+      else window.location.href = 'guest/guest_home.html';
+    }
+  });
+}
+document.addEventListener('DOMContentLoaded', wireHomeButtonUser);
