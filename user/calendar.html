@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -7,12 +8,14 @@
   <link rel="stylesheet" href="../styles.css" />
   <script type="module" defer src="calendar.js"></script>
 </head>
+
 <body class="bg-gradient">
   <!-- Nav -->
   <header class="nav">
     <div class="nav__left">
       <!-- Logo slot -->
-      <div class="logo" aria-label="MoodSync'd logo" href="../index.html"><img src="../images/musical-note.png" alt="Two consecutive white musical notes" width="20" height="15"> MoodSync’d</div>
+      <div class="logo" aria-label="MoodSync'd logo" href="../index.html"><img src="../images/musical-note.png"
+          alt="Two consecutive white musical notes" width="20" height="15"> MoodSync’d</div>
     </div>
     <nav class="nav__right" aria-label="Primary">
       <a id="welcomeLink" class="nav__special">Welcome</a>
@@ -25,8 +28,8 @@
           <a href="settings.html">Settings</a>
           <a href="calendar.html">Calendar</a>
           <a href="signout.html">Sign Out</a>
+        </div>
       </div>
-    </div>
     </nav>
   </header>
 
@@ -62,7 +65,6 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
     // Your same Firebase config
     const firebaseConfig = {
@@ -76,18 +78,20 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    const db = getFirestore(app);
     const welcomeLink = document.getElementById("welcomeLink");
 
     // Listen for auth changes
-    onAuthStateChanged(auth, async (user) => {
+    onAuthStateChanged(auth, (user) => {
       if (user) {
+        // If the user has a display name, show it
         const name = user.displayName || user.email;
         welcomeLink.textContent = `Welcome, ${name}`;
       } else {
+        // Fallback if user not logged in
         welcomeLink.textContent = "Welcome, Guest";
       }
     });
   </script>
 </body>
+
 </html>

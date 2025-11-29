@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -7,12 +8,14 @@
   <link rel="stylesheet" href="../styles.css" />
   <script type="module" defer src="app-user.js"></script>
 </head>
+
 <body class="bg-gradient">
   <!-- Nav -->
   <header class="nav">
     <div class="nav__left">
       <!-- Logo slot -->
-      <div class="logo" aria-label="MoodSync'd logo" href="../index.html"><img src="../images/musical-note.png" alt="Two consecutive white musical notes" width="20" height="15"> MoodSync’d</div>
+      <div class="logo" aria-label="MoodSync'd logo" href="../index.html"><img src="../images/musical-note.png"
+          alt="Two consecutive white musical notes" width="20" height="15"> MoodSync’d</div>
     </div>
     <nav class="nav__right" aria-label="Primary">
       <a id="welcomeLink" class="nav__special">Welcome, Guest</a>
@@ -25,8 +28,8 @@
           <a href="settings.html">Settings</a>
           <a href="calendar.html">Calendar</a>
           <a href="signout.html">Sign Out</a>
+        </div>
       </div>
-    </div>
     </nav>
   </header>
 
@@ -49,8 +52,10 @@
           <button id="newSongBtn" class="icon-control" aria-label="Shuffle / new song" title="Shuffle">
             <!-- shuffle (crossing arrows) - thick lines + filled arrowheads -->
             <svg width="22" height="22" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M3 7h6l4 4 7-7" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-              <path d="M3 17h6l4-4 7 7" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              <path d="M3 7h6l4 4 7-7" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"
+                stroke-linejoin="round" fill="none" />
+              <path d="M3 17h6l4-4 7 7" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"
+                stroke-linejoin="round" fill="none" />
               <!-- arrowheads on the right -->
               <polygon points="19,2 24,6 19,10" fill="currentColor" />
               <polygon points="19,14 24,18 19,22" fill="currentColor" />
@@ -59,7 +64,8 @@
 
           <!-- Previous (bar + triangle) -->
           <button id="prevBtn" class="icon-control" aria-label="Previous" title="Previous">
-            <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="fill:currentColor;stroke:none;">
+            <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+              style="fill:currentColor;stroke:none;">
               <!-- vertical bar on the left -->
               <rect x="5" y="4" width="2" height="16" rx="0" />
               <!-- left-pointing triangle (apex on the left) -->
@@ -69,14 +75,16 @@
 
           <!-- Play / Pause -->
           <button id="playPauseBtn" class="icon-control play-btn" aria-label="Play/Pause">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M5 3v18l15-9L5 3z" fill="currentColor"/>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true">
+              <path d="M5 3v18l15-9L5 3z" fill="currentColor" />
             </svg>
           </button>
 
           <!-- Next (triangle + bar) -->
           <button id="skipBtn" class="icon-control" aria-label="Next">
-            <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="fill:currentColor;stroke:none;">
+            <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+              style="fill:currentColor;stroke:none;">
               <!-- right-pointing triangle -->
               <polygon points="7,4 17,12 7,20" />
               <!-- vertical bar on the right -->
@@ -88,24 +96,33 @@
           <button id="favoriteBtn" class="icon-control" aria-label="Favorite" title="Favorite">
             <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <!-- outline heart path; we toggle fill via CSS when .favorited is present -->
-              <path class="heart-path" d="M12 21s-7-4.35-9-7.5C1.5 9.36 5 5 8.5 5c1.74 0 3.04.81 3.5 1.5.46-.69 1.76-1.5 3.5-1.5C19 5 22.5 9.36 21 13.5 19 16.65 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              <path class="heart-path"
+                d="M12 21s-7-4.35-9-7.5C1.5 9.36 5 5 8.5 5c1.74 0 3.04.81 3.5 1.5.46-.69 1.76-1.5 3.5-1.5C19 5 22.5 9.36 21 13.5 19 16.65 12 21 12 21z"
+                fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </button>
 
           <!-- Share (moves to top controls) -->
           <button id="shareBtn" class="icon-control" aria-label="Share" title="Share">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M16 6l-4-4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M12 2v13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true">
+              <path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7" stroke="currentColor" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M16 6l-4-4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <path d="M12 2v13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
             </svg>
           </button>
 
           <!-- Home / back to mood chooser (house icon) -->
           <button id="newPick" class="icon-control" aria-label="Back to mood chooser" title="Home">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M3 10.5L12 4l9 6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-              <path d="M5 21V12h14v9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true">
+              <path d="M3 10.5L12 4l9 6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <path d="M5 21V12h14v9" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
             </svg>
           </button>
         </div>
@@ -120,10 +137,13 @@
             <div class="modal__actions">
               <button id="shareInstagram" class="ghost instagram-btn" aria-label="Share to Instagram">
                 <!-- Instagram glyph SVG -->
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                  <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.2"/>
-                  <path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M17.5 6.5h.01" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.2" />
+                  <path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" stroke="currentColor" stroke-width="1.2"
+                    stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M17.5 6.5h.01" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
+                    stroke-linejoin="round" />
                 </svg>
                 <span>Instagram</span>
               </button>
@@ -166,7 +186,7 @@
       if (user) {
         // If the user has a display name, show it
         const name = user.displayName || user.email;
-        if (welcomeLink) welcomeLink.textContent = `Welcome, ${name}`;
+        welcomeLink.textContent = `Welcome, ${name}`;
 
         // Show today's mood if it exists so it persists after refresh.
         // If this is the first login today (count === 1) and no mood
@@ -200,11 +220,10 @@
         }
       } else {
         // Fallback if user not logged in
-        if (welcomeLink) welcomeLink.textContent = "Welcome, Guest";
+        welcomeLink.textContent = "Welcome, Guest";
       }
     });
   </script>
 </body>
+
 </html>
-
-

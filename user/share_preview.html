@@ -1,31 +1,86 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Share Preview — MoodSync'd</title>
   <link rel="stylesheet" href="../styles.css" />
   <style>
-    .share-preview{max-width:900px;margin:2rem auto;padding:1rem;background:rgba(255,255,255,0.95);border-radius:12px}
-    .preview-image{width:100%;height:auto;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.12)}
-    .caption{margin-top:1rem;font-weight:700;font-size:1.1rem}
-    .mood-pill{display:inline-block;margin-top:0.75rem;padding:.45rem .9rem;border-radius:999px;background:#0b0b0b;color:#fff;font-weight:700}
-    .share-actions{display:flex;gap:.5rem;margin-top:1rem}
-    .share-actions button{padding:.6rem .9rem;border-radius:8px;border:none;cursor:pointer}
-    .btn-download{background:#0b2a64;color:#fff}
-    .btn-copy{background:#eee}
-    .btn-open{background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);color:#fff}
-    .instructions{margin-top:1rem;color:#334155}
+    .share-preview {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px
+    }
+
+    .preview-image {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, .12)
+    }
+
+    .caption {
+      margin-top: 1rem;
+      font-weight: 700;
+      font-size: 1.1rem
+    }
+
+    .mood-pill {
+      display: inline-block;
+      margin-top: 0.75rem;
+      padding: .45rem .9rem;
+      border-radius: 999px;
+      background: #0b0b0b;
+      color: #fff;
+      font-weight: 700
+    }
+
+    .share-actions {
+      display: flex;
+      gap: .5rem;
+      margin-top: 1rem
+    }
+
+    .share-actions button {
+      padding: .6rem .9rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer
+    }
+
+    .btn-download {
+      background: #0b2a64;
+      color: #fff
+    }
+
+    .btn-copy {
+      background: #eee
+    }
+
+    .btn-open {
+      background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af);
+      color: #fff
+    }
+
+    .instructions {
+      margin-top: 1rem;
+      color: #334155
+    }
   </style>
 </head>
+
 <body class="bg-gradient">
   <header class="nav">
     <div class="nav__left">
       <!-- Logo slot -->
-      <div class="logo" aria-label="MoodSync'd logo" href="../index.html"><img src="../images/musical-note.png" alt="Two consecutive white musical notes" width="20" height="15"> MoodSync’d</div>
+      <div class="logo" aria-label="MoodSync'd logo" href="../index.html"><img src="../images/musical-note.png"
+          alt="Two consecutive white musical notes" width="20" height="15"> MoodSync’d</div>
     </div>
     <nav class="nav__right" aria-label="Primary">
-      <a class="nav__special">Welcome, Guest</a>
+      <a class="nav__special" id="welcomeLink">Welcome, Guest</a>
       <a href="created-user-home.html" class="nav__link">Home</a>
       <a href="#" class="nav__link">About</a>
       <a href="../general/tutorial.html" class="nav__link">How it Works</a>
@@ -35,11 +90,11 @@
           <a href="settings.html">Settings</a>
           <a href="calendar.html">Calendar</a>
           <a href="signout.html">Sign Out</a>
+        </div>
       </div>
-    </div>
     </nav>
   </header>
-  
+
   <main class="container">
     <section class="share-preview">
       <h2>Share Preview</h2>
@@ -56,7 +111,8 @@
       </div>
 
       <div class="instructions">
-        If Instagram opens, you can add the downloaded image to your Story and paste the caption. On mobile, the Open Instagram action attempts to open the Instagram app.
+        If Instagram opens, you can add the downloaded image to your Story and paste the caption. On mobile, the Open
+        Instagram action attempts to open the Instagram app.
       </div>
     </section>
   </main>
@@ -76,7 +132,7 @@
 
     if (dataUrl) imgEl.src = dataUrl;
     capEl.textContent = caption;
-    if (mood){ moodEl.style.display = 'inline-block'; moodEl.textContent = mood; }
+    if (mood) { moodEl.style.display = 'inline-block'; moodEl.textContent = mood; }
 
     downloadBtn.addEventListener('click', () => {
       if (!dataUrl) return alert('No image available');
@@ -85,8 +141,8 @@
     });
 
     copyBtn.addEventListener('click', async () => {
-      try{ await navigator.clipboard.writeText(caption); alert('Caption copied to clipboard'); }
-      catch(e){ alert('Could not copy caption'); }
+      try { await navigator.clipboard.writeText(caption); alert('Caption copied to clipboard'); }
+      catch (e) { alert('Could not copy caption'); }
     });
 
     openBtn.addEventListener('click', () => {
@@ -94,16 +150,48 @@
       const ua = navigator.userAgent || '';
       const isAndroid = /Android/i.test(ua);
       const isiOS = /iPhone|iPad|iPod/i.test(ua);
-      if (isAndroid){
+      if (isAndroid) {
         // Use an intent to open Instagram
-        try{ window.location.href = 'intent://instagram.com/#Intent;package=com.instagram.android;scheme=https;end'; return; } catch(e){}
+        try { window.location.href = 'intent://instagram.com/#Intent;package=com.instagram.android;scheme=https;end'; return; } catch (e) { }
       }
-      if (isiOS){
-        try{ window.location.href = 'instagram://app'; return; }catch(e){}
+      if (isiOS) {
+        try { window.location.href = 'instagram://app'; return; } catch (e) { }
       }
       // fallback: open instagram website
       window.open('https://www.instagram.com/', '_blank');
     });
   </script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+
+    // Your same Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDPMnsowBumLJVqV0JYred8mlgdy7gqOaA",
+      authDomain: "mood-sync-d-98f90.firebaseapp.com",
+      projectId: "mood-sync-d-98f90",
+      storageBucket: "mood-sync-d-98f90.firebasestorage.app",
+      messagingSenderId: "116363977039",
+      appId: "1:116363977039:web:b5fd844a9ecca38983253a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const welcomeLink = document.getElementById("welcomeLink");
+
+    // Listen for auth changes
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // If the user has a display name, show it
+        const name = user.displayName || user.email;
+        welcomeLink.textContent = `Welcome, ${name}`;
+      } else {
+        // Fallback if user not logged in
+        welcomeLink.textContent = "Welcome, Guest";
+      }
+    });
+  </script>
 </body>
+
 </html>

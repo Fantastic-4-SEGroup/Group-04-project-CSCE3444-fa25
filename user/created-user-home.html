@@ -14,7 +14,8 @@
   <header class="nav">
     <div class="nav__left">
       <!-- Logo slot -->
-      <div class="logo" aria-label="MoodSync'd logo" href="../index.html"><img src="../images/musical-note.png" alt="Two consecutive white musical notes" width="20" height="15"> MoodSync’d</div>
+      <div class="logo" aria-label="MoodSync'd logo" href="../index.html"><img src="../images/musical-note.png"
+          alt="Two consecutive white musical notes" width="20" height="15"> MoodSync’d</div>
     </div>
     <nav class="nav__right" aria-label="Primary">
       <a id="welcomeLink" class="nav__special">Welcome, Guest</a>
@@ -27,8 +28,8 @@
           <a href="settings.html">Settings</a>
           <a href="calendar.html">Calendar</a>
           <a href="signout.html">Sign Out</a>
+        </div>
       </div>
-    </div>
     </nav>
   </header>
 
@@ -85,7 +86,7 @@
       if (user) {
         // If the user has a display name, show it
         const name = user.displayName || user.email;
-        if (welcomeLink) welcomeLink.textContent = `Welcome, ${name}`;
+        welcomeLink.textContent = `Welcome, ${name}`;
 
         // Check daily login count and show "Daily mood" only on first login today
         try {
@@ -114,7 +115,7 @@
         }
       } else {
         // Fallback if user not logged in
-        if (welcomeLink) welcomeLink.textContent = "Welcome, Guest";
+        welcomeLink.textContent = "Welcome, Guest";
       }
     });
   </script>
