@@ -295,16 +295,26 @@ document.addEventListener('DOMContentLoaded', wireHomeButton);
 
 // ---------------- Inject Favorites link into Menu dropdowns ----------------
 function injectMenuFavoritesLink(){
-  document.querySelectorAll('.dropdown-content').forEach(content=>{
+  document.querySelectorAll('.dropdown-content').forEach(content => {
     if (content.querySelector('.menu-favorites-page-link')) return;
     const a = document.createElement('a');
     a.className = 'menu-favorites-page-link';
     a.textContent = 'Favorites';
-    try{
-      if (location.protocol === 'http:' || location.protocol === 'https:') a.href = `${location.origin}/favorites.html`;
-      else a.href = 'favorites.html';
-    }catch(e){ a.href = 'favorites.html'; }
-    // insert at the top so it's visible
+    try {
+      // Detect if served over HTTP(S)
+      if (location.protocol === 'http:' || location.protocol === 'https:') {
+        // repo slug = first path segment after the domain, e.g. '/Group-04-project-CSCE3444-fa25'
+        const parts = location.pathname.split('/');         // ['', 'Group-04-project-CSCE3444-fa25', 'user', '...']
+        const repo  = parts.length > 1 ? parts[1] : '';
+        const base  = repo ? `/${repo}` : '';
+        a.href = `${location.origin}${base}/favorites.html`;
+      } else {
+        // file:// or other — relative fallback
+        a.href = 'favorites.html';
+      }
+    } catch (e) {
+      a.href = 'favorites.html';
+    }
     content.insertBefore(a, content.firstChild);
   });
 }

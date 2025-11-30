@@ -346,15 +346,24 @@ document.addEventListener('DOMContentLoaded', wireHomeButtonUser);
 
 // ---------------- Inject Favorites link into Menu dropdowns (user pages) ----------------
 function injectMenuFavoritesLinkUser(){
-  document.querySelectorAll('.dropdown-content').forEach(content=>{
+  document.querySelectorAll('.dropdown-content').forEach(content => {
     if (content.querySelector('.menu-favorites-page-link')) return;
     const a = document.createElement('a');
     a.className = 'menu-favorites-page-link';
     a.textContent = 'Favorites';
-    try{
-      if (location.protocol === 'http:' || location.protocol === 'https:') a.href = `${location.origin}/favorites.html`;
-      else a.href = '../favorites.html';
-    }catch(e){ a.href = '../favorites.html'; }
+    try {
+      if (location.protocol === 'http:' || location.protocol === 'https:') {
+        const parts = location.pathname.split('/');
+        const repo  = parts.length > 1 ? parts[1] : '';
+        const base  = repo ? `/${repo}` : '';
+        a.href = `${location.origin}${base}/favorites.html`;
+      } else {
+        // When you're inside /user/ in a file-based environment, go up one level
+        a.href = '../favorites.html';
+      }
+    } catch (e) {
+      a.href = '../favorites.html';
+    }
     content.insertBefore(a, content.firstChild);
   });
 }
