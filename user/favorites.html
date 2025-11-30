@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MoodSync’d — Your Song</title>
   <link rel="stylesheet" href="../styles.css" />
-  <script type="module" defer src="app-user.js"></script>
-  <style>.playlist-hero {
+  <script type="module" defer src="../user/app-user.js"></script>
+  <style>
+  .playlist-hero {
     display:flex; gap:24px; padding:24px;
     background: var(--panel);
     color: var(--panel-ink);
@@ -31,11 +32,10 @@
   
   .songs-header, .song-row {
     display: grid;
-    grid-template-columns: 150px 1fr 200px; /* tweak widths to taste */
+    grid-template-columns: 160px 1fr 80px; /* tweak widths to taste */
     gap: 16px;
     align-items: center;
   }
-  
   
   /* Row visuals still apply */
   .song-row { padding:10px 8px; border-radius:8px; cursor:pointer; }
@@ -46,12 +46,12 @@
   .song-main  { display:flex; flex-direction:column; min-width:0; }
   .song-title { font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .song-sub   { color: rgba(11,26,42,.65); font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .song-cell { 
-    display: grid;
-    grid-template-columns: 48px 1fr;        /* cover | stacked text */
-    gap: 12px;
+  .song-cell {
+    display: flex;
     align-items: center;
+    gap: 8px;
   }
+
   
   /* Duration column style */
   .song-duration { color: rgba(11,26,42,.55); font-size:13px; text-align:left; }
@@ -98,26 +98,27 @@
   .btn--danger:disabled {
     opacity: .6;
     cursor: not-allowed;
-  }</style>
+  }
+  </style>
 </head>
 <body class="bg-gradient">
   <header class="nav">
     <div class="nav__left">
       <!-- Logo slot -->
-      <div class="logo" aria-label="MoodSync'd logo" href="index.html"><img src="images/musical-note.png"
+      <div class="logo" aria-label="MoodSync'd logo" href="index.html"><img src="/images/musical-note.png"
           alt="Two consecutive white musical notes" width="20" height="15"> MoodSync’d</div>
     </div>
     <nav class="nav__right" aria-label="Primary">
       <a id="welcomeLink" class="nav__special">Welcome, Guest</a>
-      <a href="created-user-home.html" class="nav__link">Home</a>
+      <a href="../user/created-user-home.html" class="nav__link">Home</a>
       <a href="#" class="nav__link">About</a>
-      <a href="general/tutorial.html" class="nav__link">How it Works</a>
+      <a href="../general/tutorial.html" class="nav__link">How it Works</a>
       <div class="dropdown">
         <button class="nav__link dropbtn" aria-haspopup="true" aria-expanded="false">Menu</button>
         <div class="dropdown-content">
-          <a href="settings.html">Settings</a>
-          <a href="calendar.html">Calendar</a>
-          <a href="signout.html">Sign Out</a>
+          <a href="../user/settings.html">Settings</a>
+          <a href="../user/calendar.html">Calendar</a>
+          <a href="../user/signout.html">Sign Out</a>
         </div>
       </div>
     </nav>
@@ -151,7 +152,6 @@
       <div class="songs-header">
         <div>SONG</div>
         <div>ARTIST</div>
-        <div>DURATION</div>
       </div>
 
       <ul id="favoritesList" style="list-style:none; margin:0; padding:0;"></ul>
