@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Favorites — Music I Love</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gradient">
+  <header class="nav">
+    <div class="nav__left">
+      <div class="logo" aria-label="MoodSync'd logo"><img src="images/musical-note.png" alt="musical note" width="20" height="15" style="margin-right:8px; vertical-align:middle">MoodSync'd</div>
+    </div>
+    <div class="nav__center">Welcome, <strong>test_guest</strong></div>
+    <div class="nav__right">
+      <a class="nav__link" href="index.html">Home</a>
+      <a class="nav__link" href="about.html">About</a>
+      <a class="nav__link" href="general/tutorial.html">How it Works</a>
+      <div class="dropdown">
+        <button class="dropbtn">Menu</button>
+        <div class="dropdown-content">
+          <a href="settings.html">Settings</a>
+          <a href="login.html">Sign in</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container container--player favorites-page">
+    <section class="player-card playlist-card">
+      <div class="playlist-cover">
+        <!-- Inline heart SVG used as the playlist cover (like an album picture) -->
+        <svg class="playlist-cover-img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Favorites cover">
+          <path d="M12 21s-7.5-4.9-10-8.2C-0.2 8.6 4 4 7.6 6.1 9 7 10 9 12 11c2-2 3-4 4.4-4.9C20 4 24.2 8.6 22 12.8 19.5 16.1 12 21 12 21z" fill="#ff5a6d" stroke="none"/>
+        </svg>
+      </div>
+
+      <div class="playlist-main">
+        <div class="playlist-top">
+          <div class="playlist-meta">
+            <small class="playlist-type">PLAYLIST</small>
+              <h1 class="playlist-title">Favorite Songs</h1>
+          </div>
+        </div>
+
+        <div class="playlist-header">
+          <div class="playlist-controls-left">
+            <button id="playAllBtn" class="fav-play-btn"><svg viewBox="0 0 24 24" width="14" height="14" style="margin-right:8px"><path d="M8 5v14l11-7z" fill="#fff"/></svg>Play</button>
+            <button id="shuffleBtn" class="fav-shuffle-btn"><svg viewBox="0 0 24 24" width="14" height="14" style="margin-right:8px"><path d="M17 3h4v4l-2.5-2.5L15 9l-2-2 4-4zM7 21H3v-4l2.5 2.5L9 15l2 2-4 4z" fill="#fff"/></svg>Shuffle</button>
+          </div>
+          <div class="playlist-actions">
+            <button id="openFavoritesList" class="ghost small-circle" aria-label="More">⋯</button>
+          </div>
+        </div>
+
+        <div class="favorites-table-header" aria-hidden="true">
+          <div class="favorites-row favorites-row--header dark-table-header">
+            <div class="col col--title">TITLE</div>
+            <div class="col col--album">ALBUM</div>
+            <div class="col col--artist">ARTIST</div>
+            <div class="col col--updated">UPDATED</div>
+            <div class="col col--duration">DURATION</div>
+          </div>
+        </div>
+        <ul id="favoritesList" class="favorites-list favorites-table" aria-live="polite">
+          <!-- favorites rows injected here as <li> -->
+        </ul>
+        <div id="favoritesSummary" class="favorites-summary" aria-hidden="true"></div>
+      </div>
+
+      <!-- filter removed per request -->
+    </section>
+  </main>
+  <div id="favoritesSummaryBar" class="favorites-summary-bar" aria-hidden="true"></div>
+
+  
+
+  <script src="app.js"></script>
+  <script src="favorites.js"></script>
+</body>
+</html>

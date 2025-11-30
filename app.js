@@ -98,6 +98,16 @@ function setTrackInUI(track) {
       console.warn('Autoplay blocked. User must click play.');
     });
   }
+  // sync favorite button UI for the loaded track
+  try{
+    const favBtn = document.getElementById('favoriteBtn');
+    if (favBtn){
+      const stored = JSON.parse(localStorage.getItem('guest_favorites')||'[]');
+      const key = (track?.audio||'') + '|' + (track?.title||'');
+      const exists = stored.some(x=>((x.audio||'') + '|' + (x.title||'')) === key);
+      if (exists) favBtn.classList.add('favorited'); else favBtn.classList.remove('favorited');
+    }
+  }catch(e){ /* ignore */ }
 }
 
 // Next track
@@ -282,3 +292,134 @@ function wireHomeButton(){
   });
 }
 document.addEventListener('DOMContentLoaded', wireHomeButton);
+
+// ---------------- Inject Favorites link into Menu dropdowns ----------------
+function injectMenuFavoritesLink(){
+  document.querySelectorAll('.dropdown-content').forEach(content=>{
+    if (content.querySelector('.menu-favorites-page-link')) return;
+    const a = document.createElement('a');
+    a.className = 'menu-favorites-page-link';
+    a.textContent = 'Favorites';
+    try{
+      if (location.protocol === 'http:' || location.protocol === 'https:') a.href = `${location.origin}/favorites.html`;
+      else a.href = 'favorites.html';
+    }catch(e){ a.href = 'favorites.html'; }
+    // insert at the top so it's visible
+    content.insertBefore(a, content.firstChild);
+  });
+}
+document.addEventListener('DOMContentLoaded', injectMenuFavoritesLink);
+// Render a playlist-style favorites panel inside dropdowns (compact version of favorites page)
+function renderFavoritesDropdownPanels(){
+  function loadJSON(key, fallback){ try{ const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }catch(e){ return fallback; } }
+
+  const favs = loadJSON('guest_favorites', []);
+  document.querySelectorAll('.dropdown').forEach(drop => {
+    const content = drop.querySelector('.dropdown-content');
+    if (!content) return;
+
+    // If a full-page Favorites link exists, do not render the compact songs panel
+    // — this keeps the menu simple and ensures clicking "Favorites" navigates
+    // to the dedicated `favorites.html` page instead of showing songs inline.
+    if (content.querySelector('.menu-favorites-page-link')){
+      // remove any existing compact panel to ensure songs are not shown
+      const existingPanel = content.querySelector('.favorites-panel');
+      if (existingPanel) existingPanel.remove();
+      return; // continue to next dropdown
+    }
+
+    // ensure a visible opener that toggles the panel
+    // Prefer an existing page-link so we don't create duplicate "Favorites" entries.
+    let opener = content.querySelector('.menu-favorites-opener') || content.querySelector('.menu-favorites-page-link');
+    if (!opener){
+      opener = document.createElement('a');
+      opener.className = 'menu-favorites-opener';
+      opener.href = '#';
+      opener.textContent = 'Favorites';
+      opener.addEventListener('click', (e)=>{ e.preventDefault(); content.classList.toggle('show-favs'); });
+      content.insertBefore(opener, content.firstChild);
+    } else {
+      // If we found the existing page-link, make it act as the opener (toggle the small panel)
+      // Avoid attaching multiple listeners by marking the element once wired.
+      if (!opener.dataset.favOpenerAttached){
+        opener.addEventListener('click', (e)=>{ e.preventDefault(); content.classList.toggle('show-favs'); });
+        opener.dataset.favOpenerAttached = '1';
+      }
+    }
+
+    // legacy compact panel behavior removed — we intentionally do not create
+    // a `.favorites-panel` here so songs are not shown inside the dropdown.
+
+    // populate header collage and count
+    const collage = panel.querySelector('.fp-collage'); collage.innerHTML = '';
+    const sample = favs.slice(0,4);
+    for (let i=0;i<4;i++){ const img = document.createElement('img'); img.className='collage-tile'; img.src = sample[i]?.cover || 'images/default_album_icon.jpg'; collage.appendChild(img); }
+    panel.querySelector('.fp-count').textContent = favs.length || 0;
+
+    const listEl = panel.querySelector('.fp-list'); listEl.innerHTML = '';
+    if (!favs || !favs.length){ const empty = document.createElement('div'); empty.className='favorites-empty'; empty.textContent='No favorites yet'; listEl.appendChild(empty); }
+    else {
+      // header row for list (compact)
+      const headerRow = document.createElement('div'); headerRow.className='favorites-row favorites-row--header'; headerRow.innerHTML=`<div class="col col--fav"></div><div class="col col--title">TITLE</div><div class="col col--artist">ARTIST</div><div class="col col--actions"></div>`; listEl.appendChild(headerRow);
+      favs.slice(0,8).forEach(t=>{
+        const row = document.createElement('div'); row.className='favorites-row';
+        const colFav = document.createElement('div'); colFav.className='col col--fav'; const heart = document.createElement('button'); heart.className='fav-heart'; heart.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-4.35-9-7.5C1.5 9.36 5 5 8.5 5c1.74 0 3.04.81 3.5 1.5.46-.69 1.76-1.5 3.5-1.5C19 5 22.5 9.36 21 13.5 19 16.65 12 21 12 21z" fill="currentColor"/></svg>';
+        heart.addEventListener('click', ()=>{ const stored = loadJSON('guest_favorites',[]); const k = (t.audio||'')+'|'+(t.title||''); const i = stored.findIndex(x=>((x.audio||'')+'|'+(x.title||''))===k); if(i>=0){ stored.splice(i,1); localStorage.setItem('guest_favorites', JSON.stringify(stored)); renderFavoritesDropdownPanels(); } });
+        colFav.appendChild(heart);
+        const colTitle = document.createElement('div'); colTitle.className='col col--title'; colTitle.innerHTML=`<div class="title">${t.title||'Untitled'}</div><div class="sub">${t.artist||''}</div>`;
+        const colArtist = document.createElement('div'); colArtist.className='col col--artist'; colArtist.textContent = t.artist||'';
+        const colActions = document.createElement('div'); colActions.className='col col--actions'; const playBtn = document.createElement('button'); playBtn.className='fav-play-icon'; playBtn.title='Play'; playBtn.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>';
+        playBtn.addEventListener('click', ()=>{ try{ if(typeof setTrackInUI==='function'){ setTrackInUI(t); window.location.href = 'player.html'; return; } }catch(e){} try{ sessionStorage.setItem('favorite_to_play', JSON.stringify(t)); window.location.href='player.html'; }catch(e){ window.location.href='player.html'; } });
+        colActions.appendChild(playBtn);
+        row.appendChild(colFav); row.appendChild(colTitle); row.appendChild(colArtist); row.appendChild(colActions);
+        listEl.appendChild(row);
+      });
+    }
+
+    // wire small filter
+    const filter = panel.querySelector('.fp-filter'); filter.value = '';
+    filter.oninput = ()=>{
+      const q = filter.value.toLowerCase(); Array.from(listEl.querySelectorAll('.favorites-row')).forEach(r=>{ if (r.classList.contains('favorites-row--header')) return; const title = r.querySelector('.col--title .title')?.textContent?.toLowerCase()||''; const artist = r.querySelector('.col--title .sub')?.textContent?.toLowerCase()||''; r.style.display = (title.indexOf(q)!==-1 || artist.indexOf(q)!==-1) ? '' : 'none'; });
+    };
+  });
+}
+document.addEventListener('DOMContentLoaded', renderFavoritesDropdownPanels);
+window.addEventListener('storage', (e)=>{ if (e.key === 'guest_favorites') renderFavoritesDropdownPanels(); });
+
+// ---------------- Favorite heart: save and open Favorites page ----------------
+function wireFavoriteToFavorites(){
+  const favBtn = document.getElementById('favoriteBtn');
+  if (!favBtn) return;
+
+  favBtn.addEventListener('click', (e)=>{
+    e.preventDefault();
+    // read current track info from DOM
+    const titleText = document.getElementById('trackTitle')?.textContent || '';
+    const [titlePart, artistPart] = titleText.split(' — ').map(s=>s && s.trim());
+    const cover = document.getElementById('coverArt')?.src || '';
+    const audio = document.getElementById('audio')?.currentSrc || '';
+    const cur = { title: titlePart || '', artist: artistPart || '', cover, audio, mood: sessionStorage.getItem('guest_mood')||'' };
+    if (!cur.title && !cur.audio) return;
+
+    try{
+      const stored = JSON.parse(localStorage.getItem('guest_favorites')||'[]');
+      const key = (cur.audio||'') + '|' + (cur.title||'');
+      const existsIndex = stored.findIndex(x => ((x.audio||'') + '|' + (x.title||'')) === key);
+      if (existsIndex >= 0){
+        // already favorited -> remove (toggle off)
+        stored.splice(existsIndex, 1);
+        favBtn.classList.remove('favorited');
+      } else {
+        // not favorited -> add to top and store when it was added
+        cur.dateAdded = (new Date()).toISOString();
+        // allow an optional album field if present on the page
+        cur.album = document.getElementById('albumName')?.textContent || cur.album || '';
+        stored.unshift(cur);
+        favBtn.classList.add('favorited');
+      }
+      localStorage.setItem('guest_favorites', JSON.stringify(stored));
+      // do not navigate away — keep user on the current page
+    }catch(err){ console.warn('Could not save favorite', err); }
+  });
+}
+document.addEventListener('DOMContentLoaded', wireFavoriteToFavorites);

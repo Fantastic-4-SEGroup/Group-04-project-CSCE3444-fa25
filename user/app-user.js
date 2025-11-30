@@ -152,6 +152,16 @@ function setTrackInUI(track) {
       console.warn('Autoplay blocked. User must click play.');
     });
   }
+  // sync favorite button UI for the loaded track (user pages)
+  try{
+    const favBtn = document.getElementById('favoriteBtn');
+    if (favBtn){
+      const stored = JSON.parse(localStorage.getItem('guest_favorites')||'[]');
+      const key = (track?.audio||'') + '|' + (track?.title||'');
+      const exists = stored.some(x=>((x.audio||'') + '|' + (x.title||'')) === key);
+      if (exists) favBtn.classList.add('favorited'); else favBtn.classList.remove('favorited');
+    }
+  }catch(e){ /* ignore */ }
 }
 
 // Next track
@@ -333,3 +343,53 @@ function wireHomeButtonUser(){
   });
 }
 document.addEventListener('DOMContentLoaded', wireHomeButtonUser);
+
+// ---------------- Inject Favorites link into Menu dropdowns (user pages) ----------------
+function injectMenuFavoritesLinkUser(){
+  document.querySelectorAll('.dropdown-content').forEach(content=>{
+    if (content.querySelector('.menu-favorites-page-link')) return;
+    const a = document.createElement('a');
+    a.className = 'menu-favorites-page-link';
+    a.textContent = 'Favorites';
+    try{
+      if (location.protocol === 'http:' || location.protocol === 'https:') a.href = `${location.origin}/favorites.html`;
+      else a.href = '../favorites.html';
+    }catch(e){ a.href = '../favorites.html'; }
+    content.insertBefore(a, content.firstChild);
+  });
+}
+document.addEventListener('DOMContentLoaded', injectMenuFavoritesLinkUser);
+
+// ---------------- Favorite heart: save and open Favorites page (user) ----------------
+function wireFavoriteToFavoritesUser(){
+  const favBtn = document.getElementById('favoriteBtn');
+  if (!favBtn) return;
+
+  favBtn.addEventListener('click', (e)=>{
+    e.preventDefault();
+    const titleText = document.getElementById('trackTitle')?.textContent || '';
+    const [titlePart, artistPart] = titleText.split(' — ').map(s=>s && s.trim());
+    const cover = document.getElementById('coverArt')?.src || '';
+    const audio = document.getElementById('audio')?.currentSrc || '';
+    const cur = { title: titlePart || '', artist: artistPart || '', cover, audio, mood: sessionStorage.getItem('guest_mood')||'' };
+    if (!cur.title && !cur.audio) return;
+
+    try{
+      const stored = JSON.parse(localStorage.getItem('guest_favorites')||'[]');
+      const key = (cur.audio||'') + '|' + (cur.title||'');
+      const existsIndex = stored.findIndex(x => ((x.audio||'') + '|' + (x.title||'')) === key);
+      if (existsIndex >= 0){
+        stored.splice(existsIndex, 1);
+        favBtn.classList.remove('favorited');
+      } else {
+        cur.dateAdded = (new Date()).toISOString();
+        cur.album = document.getElementById('albumName')?.textContent || cur.album || '';
+        stored.unshift(cur);
+        favBtn.classList.add('favorited');
+      }
+      localStorage.setItem('guest_favorites', JSON.stringify(stored));
+      // do not navigate away; remain on song page
+    }catch(err){ console.warn('Could not save favorite', err); }
+  });
+}
+document.addEventListener('DOMContentLoaded', wireFavoriteToFavoritesUser);
