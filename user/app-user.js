@@ -3,6 +3,20 @@ import { recordDailyMood } from './calendar.js';
 import { getAuth } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
+// Helper: compute repository base path for GitHub Pages deployments.
+// Returns a string like `"/MyRepo"` when served at `https://user.github.io/MyRepo/...`,
+// or an empty string for root-hosted sites or file:// environments.
+function getRepoBase(){
+  try{
+    if (location && (location.protocol === 'http:' || location.protocol === 'https:')){
+      const parts = location.pathname.split('/');
+      const repo  = parts.length > 1 ? parts[1] : '';
+      return repo ? `/${repo}` : '';
+    }
+  }catch(e){ /* ignore */ }
+  return '';
+}
+
 // ---------------- Mood Selection Logic ----------------
 const chips = document.querySelectorAll('.chip');
 const generateBtn = document.getElementById('generateBtn');
@@ -334,7 +348,8 @@ function wireHomeButtonUser(){
     const path = window.location.pathname || '';
     const target = /[/\\]user[/\\]/.test(path) ? '/user/created-user-home.html' : '/guest/guest_home.html';
     if (location.protocol && (location.protocol === 'http:' || location.protocol === 'https:')){
-      window.location.href = `${location.origin}${target}`;
+      const base = getRepoBase();
+      window.location.href = `${location.origin}${base}${target}`;
     } else {
       if (/[/\\]user[/\\]/.test(path)) window.location.href = '../user/created-user-home.html';
       else if (/[/\\]guest[/\\]/.test(path)) window.location.href = '../guest/guest_home.html';
@@ -352,10 +367,8 @@ function injectMenuFavoritesLinkUser(){
     a.className = 'menu-favorites-page-link';
     a.textContent = 'Favorites';
     try {
+      const base = getRepoBase();
       if (location.protocol === 'http:' || location.protocol === 'https:') {
-        const parts = location.pathname.split('/');
-        const repo  = parts.length > 1 ? parts[1] : '';
-        const base  = repo ? `/${repo}` : '';
         a.href = `${location.origin}${base}/favorites.html`;
       } else {
         // When you're inside /user/ in a file-based environment, go up one level

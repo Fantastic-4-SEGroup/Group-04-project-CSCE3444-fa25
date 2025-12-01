@@ -13,7 +13,7 @@
     <nav class="nav__right" aria-label="Primary">
       <a class="nav__special">Welcome, Guest</a>
       <a href="created-user-home.html" class="nav__link">Home</a>
-      <a href="/user/about_us.html" class="nav__link">About</a>
+      <a href="about_us.html" class="nav__link">About</a>
       <a href="../general/tutorial.html" class="nav__link">How it Works</a>
       <div class="dropdown">
         <button class="nav__link dropbtn" aria-haspopup="true" aria-expanded="false">Menu</button>
@@ -82,11 +82,11 @@
       const selectedEls = Array.from(document.querySelectorAll('#genreGrid .is-selected'));
       if (selectedEls.length !== 3) return;
       const genres = selectedEls.map(el => el.dataset.genre);
-      // ensure user is signed in
+        // ensure user is signed in
       const user = auth.currentUser;
       if (!user){
         // redirect to login if somehow not authenticated
-        window.location.href = 'login.html';
+          window.location.href = 'login.html';
         return;
       }
       // save preferences to user's doc
