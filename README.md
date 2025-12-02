@@ -13,3 +13,5 @@ Team Members and Roles:
   - Jontrelle Norgaisse: Developement Coordinator
 
 Trello Link: https://trello.com/b/S3ou3a3F/group-04-project-csce3444-fa25
+
+Deployed Link: https://moodsync-d.vercel.app/
