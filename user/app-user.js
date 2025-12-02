@@ -109,16 +109,11 @@ async function fetchTracks() {
     const mood = sessionStorage.getItem('guest_mood') || '';
     const genres = JSON.parse(localStorage.getItem('user_genres')) || [];
 
-    // Combine mood + genres
-    const queryParts = [mood, ...genres].filter(p => p); // Filter out empty parts
-    const baseQuery = queryParts.join(' ');
-    
-    // randomization for more different songs to be fetched
-    const randomSeed = Math.random(); 
-    const finalQuery = baseQuery ? `${baseQuery} ${randomSeed}` : randomSeed.toString();
+    // Combine mood + genres equally
+    const query = [mood, ...genres].join(' ');
 
-    // Fetch tracks only (not playlists) using the finalQuery
-    const res = await fetch(`${host}/v1/tracks/search?query=${encodeURIComponent(finalQuery)}&app_name=MoodSync`);
+    // Fetch tracks only (not playlists)
+    const res = await fetch(`${host}/v1/tracks/search?query=${encodeURIComponent(query)}}&app_name=MoodSync`);
     const json = await res.json();
 
     // Map only individual tracks
